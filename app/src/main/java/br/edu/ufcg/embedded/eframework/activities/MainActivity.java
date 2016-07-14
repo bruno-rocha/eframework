@@ -1,8 +1,13 @@
 package br.edu.ufcg.embedded.eframework.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +17,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.squareup.picasso.Picasso;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
+import br.edu.ufcg.embedded.eframework.utils.CircleTransform;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+
+    public static final String MAP_TAG = "MAP_TAG";
+
+    private SharedPreferences sharedPreferences;
+    private GoogleApiClient mGoogleApiClient;
+    private TextView nameUsr;
+    private TextView emailUsr;
+    private ImageView imgUsr;
+    private MapFragment mapFragment;
+    private FragmentManager fragmentManager;
+    private int lastFragment;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +54,25 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,6 +82,42 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerLayout = navigationView.getHeaderView(0);
+
+        nameUsr = (TextView) headerLayout.findViewById(R.id.nameUsr);
+        emailUsr = (TextView) headerLayout.findViewById(R.id.emailUsr);
+        imgUsr = (ImageView) headerLayout.findViewById(R.id.imgUsr);
+
+        setUpViewsDrawer();
+        setUpFragments();
+    }
+
+    private void setUpFragments(){
+        mapFragment = new MapFragment();
+
+        currentFragment = mapFragment;
+
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, mapFragment, MAP_TAG);
+        fragmentTransaction.commit();
+    }
+
+    private void setUpViewsDrawer(){
+        String nome = sharedPreferences.getString(SplashActivity.USER_NOME, "");
+        String email = sharedPreferences.getString(SplashActivity.USER_EMAIL, "");
+        String urlImage = sharedPreferences.getString(SplashActivity.USER_URL_PHOTO, "");
+
+        nameUsr.setText(nome);
+        emailUsr.setText(email);
+        nameUsr.setVisibility(View.VISIBLE);
+
+        if(!urlImage.equals("")){
+            Picasso.with(this).load(urlImage).transform(new CircleTransform()).into(imgUsr);
+        } else {
+            Picasso.with(this).load(R.drawable.default_user).transform(new CircleTransform()).into(imgUsr);
+        }
     }
 
     @Override
@@ -82,22 +158,62 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        } else if (id == R.id.nav_slideshow) {
+        if (id == 0) {
+            id = lastFragment;
+        }
 
-        } else if (id == R.id.nav_manage) {
+        switch (id) {
+            case R.id.map:
+                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
+                    fragmentTransaction.show(mapFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
+                }
+                currentFragment = mapFragment;
+                lastFragment = R.id.map;
+                break;
+            case R.id.logout:
+                signOut();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+                Intent mainIntent = new Intent(MainActivity.this,SplashActivity.class);
+                startActivity(mainIntent);
+                finish();
+            default:
+                break;
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+
+                        sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                        editor.putString(SplashActivity.USER_NOME, "");
+                        editor.putString(SplashActivity.USER_URL_PHOTO, "");
+                        editor.putString(SplashActivity.USER_EMAIL, "");
+
+                        editor.apply();
+                    }
+                });
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

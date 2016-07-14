@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "133948748030",
+    "project_id": "e-framework-1130"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:133948748030:android:5197111575193c22",
+        "android_client_info": {
+          "package_name": "br.edu.ufcg.edu.embedded.eframework"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "133948748030-3chrkaujbmq7hlptrthcpg4hamh45tq3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.edu.ufcg.edu.embedded.eframework",
+            "certificate_hash": "D9322EFDB5727B2C8DEC4C5F8EFFA19C3DE5BED6"
+          }
+        },
+        {
+          "client_id": "133948748030-383cc28f9in13scs4s7rok8lebc84v8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW1i1pIC5jwYfgEoQU9eVr0bC2PO7z0n8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-70110840-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:133948748030:android:1c34ab984875fad1",
+        "android_client_info": {
+          "package_name": "br.edu.ufcg.embedded.eframework"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "133948748030-dc99cp1efks3ildba954hgl8du9http5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.edu.ufcg.embedded.eframework",
+            "certificate_hash": "D9322EFDB5727B2C8DEC4C5F8EFFA19C3DE5BED6"
+          }
+        },
+        {
+          "client_id": "133948748030-rj9qcgta2e65u40vreqros0pc9ln48im.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.edu.ufcg.embedded.eframework",
+            "certificate_hash": "72F47C4F9348B09E1D9DFF059B46F6EF5703E7EA"
+          }
+        },
+        {
+          "client_id": "133948748030-383cc28f9in13scs4s7rok8lebc84v8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW1i1pIC5jwYfgEoQU9eVr0bC2PO7z0n8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
