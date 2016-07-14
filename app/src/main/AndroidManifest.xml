@@ -3,6 +3,7 @@
     package="br.edu.ufcg.embedded.eframework">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:allowBackup="true"

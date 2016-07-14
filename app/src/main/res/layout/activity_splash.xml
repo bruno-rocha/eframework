@@ -30,4 +30,18 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="240dp"
         android:layout_marginBottom="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/continuar_sem_login"
+        android:id="@+id/signIn"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="#ffffff"
+        android:clickable="true"
+        android:layout_below="@+id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:padding="15dp"
+        android:textSize="14dp" />
 </RelativeLayout>

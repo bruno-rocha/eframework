@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -195,25 +196,49 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
+        sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String login = sharedPreferences.getString(SplashActivity.USER_LOGIN, "");
 
-                        sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (login.equals(SplashActivity.FACEBOOK_LOGIN)) {
+            LoginManager.getInstance().logOut();
+        } else if (login.equals(SplashActivity.GOOGLE_LOGIN)){
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {}
+                    });
+        }
 
-                        editor.putString(SplashActivity.USER_NOME, "");
-                        editor.putString(SplashActivity.USER_URL_PHOTO, "");
-                        editor.putString(SplashActivity.USER_EMAIL, "");
+        editor.putString(SplashActivity.USER_NOME, "");
+        editor.putString(SplashActivity.USER_URL_PHOTO, "");
+        editor.putString(SplashActivity.USER_EMAIL, "");
+        editor.putString(SplashActivity.USER_ID, "0");
+        editor.putBoolean(SplashActivity.USER_STATUS, false);
+        editor.putString(SplashActivity.USER_LOGIN, SplashActivity.NO_SOCIAL_LOGIN);
 
-                        editor.apply();
-                    }
-                });
+        editor.apply();
+
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == SIGN_IN_CODE) {
+//            isConsentScreenOpened = false;
+//
+//            if (resultCode != RESULT_OK) {
+//                isSignInButtonClicked = false;
+//            }
+//
+//            if (!googleApiClient.isConnecting()) {
+//                googleApiClient.connect();
+//            }
+//        }
+//    }
 }

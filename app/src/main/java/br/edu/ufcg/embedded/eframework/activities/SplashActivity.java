@@ -98,6 +98,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
         signInFacebookButton = (LoginButton) findViewById(R.id.login_button);
 
+        signInButton = (Button) findViewById(R.id.signIn);
+        signInButton.setOnClickListener(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
 
@@ -119,7 +121,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                         signInFacebookButton.setVisibility(View.GONE);
                     }
                     signInGoogleButton.setVisibility(SignInButton.VISIBLE);
-//                    signInButton.setVisibility(Button.VISIBLE);
+                    signInButton.setVisibility(Button.VISIBLE);
                 }
 
                 if (haveFacebook()) {
@@ -137,17 +139,15 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         signInGoogleButton.setVisibility(SignInButton.INVISIBLE);
         signInFacebookButton.setVisibility(View.INVISIBLE);
         signInButton.setVisibility(Button.INVISIBLE);
-        updateUI(true);
+        updateUI();
     }
 
-    private void updateUI(boolean b) {
-        if (b) {
-            if (!isActivityRunning(MainActivity.class) && !closed) {
-                startActivity(new Intent(this, MainActivity.class));
-            }
-            closed = true;
-            finish();
+    private void updateUI() {
+        if (!isActivityRunning(MainActivity.class) && !closed) {
+            startActivity(new Intent(this, MainActivity.class));
         }
+        closed = true;
+        finish();
     }
 
     // GOOGLE METHODS
@@ -201,6 +201,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     private void signInGoogle() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        isConsentScreenOpened = true;
     }
 
     private void handleSignInGoogleResult(GoogleSignInResult result) {
@@ -218,6 +219,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
             editor.putString(USER_NOME, nome);
             editor.putString(USER_EMAIL, email);
+            editor.putString(USER_LOGIN, GOOGLE_LOGIN);
 
             if (foto_url != null) {
                 editor.putString(USER_URL_PHOTO, foto_url.toString());
@@ -227,10 +229,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
             editor.apply();
 
-            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
+            updateUI();
         }
     }
 
@@ -284,7 +283,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
             getFriendsFacebook();
 
-            updateUI(true);
+            updateUI();
         }
     }
 
@@ -418,6 +417,16 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                 signInGoogle();
                 isGoogleButtonClicked = true;
                 break;
+            case R.id.signIn:
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(USER_ID, "0");
+                editor.putBoolean(USER_STATUS, true);
+                editor.putString(USER_LOGIN, NO_SOCIAL_LOGIN);
+                editor.apply();
+
+                updateUI();
+                break;
         }
     }
 
@@ -426,6 +435,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == SIGN_IN_CODE) {
+            isConsentScreenOpened = false;
+
             if (resultCode != RESULT_OK) {
                 isGoogleButtonClicked = false;
             }
@@ -457,7 +468,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                     } else {
                         signInFacebookButton.setVisibility(View.INVISIBLE);
                     }
-                    //continueBt.setVisibility(Button.VISIBLE);
+                    signInButton.setVisibility(Button.VISIBLE);
                 }
 
                 if (isGoogleButtonClicked) {
