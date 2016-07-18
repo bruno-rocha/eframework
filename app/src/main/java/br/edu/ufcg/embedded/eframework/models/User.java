@@ -1,4 +1,4 @@
-package br.edu.ufcg.embedded.eframework.dao;
+package br.edu.ufcg.embedded.eframework.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
