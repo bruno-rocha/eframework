@@ -98,7 +98,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         sMapFragment = SupportMapFragment.newInstance();
         FragmentTransaction fragmentTransaction =
                 getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, sMapFragment);
+        fragmentTransaction.add(R.id.map_container, sMapFragment);
         fragmentTransaction.commit();
         sMapFragment.getMapAsync(this);
     }
