@@ -30,4 +30,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.facebook.android:facebook-android-sdk:4.10.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
+
+    compile 'com.google.android.gms:play-services:8.3.0'
 }

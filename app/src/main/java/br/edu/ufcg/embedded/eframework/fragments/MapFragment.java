@@ -4,6 +4,7 @@ package br.edu.ufcg.embedded.eframework.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,17 +36,19 @@ import br.edu.ufcg.embedded.eframework.models.Evento;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback{
 
 
     private Context mContext;
+    private SupportMapFragment sMapFragment;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-
+        setUpMap();
         mContext = getContext();
         getEvents();
 
@@ -85,5 +91,21 @@ public class MapFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(req);
         return events;
+    }
+
+    private void setUpMap() {
+        // Try to obtain the map from the SupportMapFragment.
+        sMapFragment = SupportMapFragment.newInstance();
+        FragmentTransaction fragmentTransaction =
+                getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, sMapFragment);
+        fragmentTransaction.commit();
+        sMapFragment.getMapAsync(this);
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
     }
 }
