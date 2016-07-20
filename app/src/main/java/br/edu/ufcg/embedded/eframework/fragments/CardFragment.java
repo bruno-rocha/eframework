@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.activities.MainActivity;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 import br.edu.ufcg.embedded.eframework.utils.EventsAdapter;
 
@@ -33,11 +34,11 @@ import br.edu.ufcg.embedded.eframework.utils.EventsAdapter;
  * Created by Treinamento Asus on 20/07/2016.
  */
 public class CardFragment extends Fragment {
+
     private Context mContext;
     private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    private List<Evento> eventos = new ArrayList<Evento>();
+    private List<Evento> eventos = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,15 +47,13 @@ public class CardFragment extends Fragment {
         View view = inflater.inflate(R.layout.content_card, container, false);
         mContext = getContext();
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
 
         eventos = getEvents();
 
-        adapter = new EventsAdapter(eventos);
+        adapter = new EventsAdapter(eventos, mContext);
         recyclerView.setAdapter(adapter);
 
 
