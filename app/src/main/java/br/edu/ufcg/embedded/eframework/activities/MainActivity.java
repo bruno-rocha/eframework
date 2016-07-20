@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.fragments.CardFragment;
 import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
 import br.edu.ufcg.embedded.eframework.utils.CircleTransform;
 
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     public static final String MAP_TAG = "MAP_TAG";
+    public static final String CARD_TAG = "CARD_TAG";
+
 
     private SharedPreferences sharedPreferences;
     private GoogleApiClient mGoogleApiClient;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private TextView emailUsr;
     private ImageView imgUsr;
     private MapFragment mapFragment;
+    private CardFragment cardFragment;
     private FragmentManager fragmentManager;
     private int lastFragment;
     private Fragment currentFragment;
@@ -96,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpFragments(){
         mapFragment = new MapFragment();
+        cardFragment = new CardFragment();
 
         currentFragment = mapFragment;
 
@@ -179,6 +184,21 @@ public class MainActivity extends AppCompatActivity
                 currentFragment = mapFragment;
                 lastFragment = R.id.map;
                 break;
+
+            case R.id.card:
+                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (fragmentManager.findFragmentByTag(CARD_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, cardFragment, CARD_TAG);
+                    fragmentTransaction.show(cardFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(CARD_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(cardFragment).commit();
+                }
+                currentFragment = cardFragment;
+                lastFragment = R.id.card;
+                break;
+
+
             case R.id.logout:
                 signOut();
 

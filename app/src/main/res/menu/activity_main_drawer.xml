@@ -7,6 +7,12 @@
             android:id="@+id/map"
             android:icon="@android:drawable/ic_dialog_map"
             android:title="@string/eventos" />
+
+        <item
+            android:id="@+id/card"
+            android:icon="@android:drawable/ic_dialog_dialer"
+            android:title="@string/cards" />
+
     </group>
 
     <group android:checkableBehavior="none"
