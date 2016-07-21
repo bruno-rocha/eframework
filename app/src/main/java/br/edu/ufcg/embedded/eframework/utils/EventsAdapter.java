@@ -1,4 +1,5 @@
 package br.edu.ufcg.embedded.eframework.utils;
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import br.edu.ufcg.embedded.eframework.models.Evento;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
 
+    private LayoutInflater mLayoutInflater;
     private List<Evento> eventos;
     private Context context;
 
@@ -43,23 +45,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     public EventsAdapter(List<Evento> lista_eventos, Context context){
         eventos = lista_eventos;
+        mLayoutInflater = LayoutInflater.from(context);
         context = context;
     }
 
     @Override
     public EventsHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.card_layout, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.card_layout, viewGroup, false);
 
-        EventsHolder ev = new EventsHolder(view);
-
-        return ev;
+        return new EventsHolder(view);
     }
 
     @Override
     public void onBindViewHolder(EventsHolder viewHolder, int i) {
-        Evento evento = eventos.get(i);
-        viewHolder.itemTitle.setText(evento.getNome());
+        viewHolder.itemTitle.setText(eventos.get(i).getNome());
     }
 
     @Override

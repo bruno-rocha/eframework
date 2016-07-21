@@ -39,6 +39,7 @@ public class CardFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<Evento> eventos = new ArrayList<>();
+    private List<String> eventos_nome;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,11 +51,10 @@ public class CardFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
-
         eventos = getEvents();
-
-        adapter = new EventsAdapter(eventos, mContext);
-        recyclerView.setAdapter(adapter);
+//        eventos_nome = getEventsNames(eventos);
+//        adapter = new EventsAdapter(eventos_nome, mContext);
+//        recyclerView.setAdapter(adapter);
 
 
         return view;
@@ -80,7 +80,9 @@ public class CardFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-//
+
+                        adapter = new EventsAdapter(eventos, mContext);
+                        recyclerView.setAdapter(adapter);
 //                        if (events.size() > 0){
 //                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
 //                            dataSource.saveAllUsers(listaUsers);
@@ -95,6 +97,9 @@ public class CardFragment extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(req);
+
         return events;
     }
+
+
 }
