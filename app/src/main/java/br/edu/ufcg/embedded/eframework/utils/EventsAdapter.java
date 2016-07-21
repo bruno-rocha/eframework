@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
@@ -23,6 +25,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
 
     static class EventsHolder extends RecyclerView.ViewHolder{
 
+        private final ImageView img;
         public TextView itemTitle;
         public CardView cardView;
         public RecyclerView recyclerView;
@@ -38,6 +41,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             itemTitle = (TextView)itemView.findViewById(R.id.cardTitle);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
+            img = (ImageView) itemView.findViewById(R.id.cardImage);
 
         }
 
@@ -46,7 +50,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     public EventsAdapter(List<Evento> lista_eventos, Context context){
         eventos = lista_eventos;
         mLayoutInflater = LayoutInflater.from(context);
-        context = context;
+        this.context = context;
     }
 
     @Override
@@ -59,6 +63,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     @Override
     public void onBindViewHolder(EventsHolder viewHolder, int i) {
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
+        Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
+//        viewHolder.img.setBackgroundResource(eventos.);
+
     }
 
     @Override
