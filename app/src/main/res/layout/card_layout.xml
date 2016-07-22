@@ -17,6 +17,7 @@
             android:layout_marginTop="10dp"
             android:foreground="?android:attr/selectableItemBackground"
             android:id="@+id/cardView"
+            android:clickable="true"
             android:layout_marginBottom="10dp">
 
             <FrameLayout
@@ -33,7 +34,8 @@
                     android:src="@mipmap/ic_launcher"
                     android:adjustViewBounds="true"
                     android:scaleType="center"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                   />
                 <FrameLayout
                     android:layout_width="321dp"
                     android:layout_height="wrap_content"
@@ -41,18 +43,14 @@
                     android:background="#96ffffff"
                     android:padding="10dp"
                     android:layout_gravity="bottom">
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="CardView"
                     android:id="@+id/cardTitle"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/black"
-                    android:background="#96ffffff" />
-                </FrameLayout>
+                    android:textSize="15sp" />
+            </FrameLayout>
 
                 <ImageButton
                     android:layout_width="45dp"
@@ -60,7 +58,9 @@
                     android:id="@+id/cardDownload"
                     android:layout_gravity="right|bottom"
                     android:padding="10dp"
-                    android:background="@drawable/ic_launcher" />
+                    android:background="@drawable/ic_launcher"
+                    android:adjustViewBounds="false"
+                    />
 
 
             </FrameLayout>

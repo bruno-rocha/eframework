@@ -1,6 +1,7 @@
 package br.edu.ufcg.embedded.eframework.utils;
-import android.app.usage.UsageEvents;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
             img = (ImageView) itemView.findViewById(R.id.cardImage);
 
+
         }
 
     }
@@ -61,10 +63,35 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }
 
     @Override
-    public void onBindViewHolder(EventsHolder viewHolder, int i) {
+    public void onBindViewHolder(EventsHolder viewHolder, final int i) {
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("Instalar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, "Instalando evento...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setTitle(eventos.get(i).getNome());
+                dialog.setMessage(eventos.get(i).getDescricao());
+                dialog.create();
+                dialog.show();
+            }
+        });
+
+
 
     }
 
