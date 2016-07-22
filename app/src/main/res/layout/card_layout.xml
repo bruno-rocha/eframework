@@ -49,16 +49,16 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="CardView"
                     android:id="@+id/cardTitle"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"/>
             </FrameLayout>
 
                 <ImageButton
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:id="@+id/cardDownload"
                     android:layout_gravity="right|bottom"
                     android:padding="10dp"
-                    android:background="@drawable/ic_launcher"
+                    android:background="@mipmap/ic_downloader"
                     android:adjustViewBounds="false"
                     />
 
