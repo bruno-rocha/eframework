@@ -70,7 +70,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
-        viewHolder.cardView.setOnClickListener(new View.OnClickListener(){
+        viewHolder.itemTitle.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -93,15 +93,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 dialog.show();
             }
         });
-        viewHolder.itemDownloader.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                        Toast.makeText(context, context.getString(R.string.installing), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
 
     }
 
