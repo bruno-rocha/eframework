@@ -5,12 +5,14 @@ public class Evento {
     String descricao;
     double latitude;
     double longitude;
+    String urlFoto;
 
-    public Evento(String nome, String descricao, double latitude, double longitude) {
+    public Evento(String nome, String descricao, double latitude, double longitude, String urlFoto) {
         this.nome = nome;
         this.descricao = descricao;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.urlFoto = urlFoto;
     }
 
     public String getNome() {
@@ -43,6 +45,14 @@ public class Evento {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
     }
 
     @Override

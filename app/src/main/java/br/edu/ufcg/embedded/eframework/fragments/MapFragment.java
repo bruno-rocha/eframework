@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +140,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 String descricao = object.getString("descricao");
                                 double latitude = object.getDouble("latitude");
                                 double longitude = object.getDouble("longitude");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude);
+                                String url_foto = object.getString("url_photo");
+                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
                                 Log.d("TAG", evento.toString());
                                 events.add(evento);
                                 setMarker(map, evento);
