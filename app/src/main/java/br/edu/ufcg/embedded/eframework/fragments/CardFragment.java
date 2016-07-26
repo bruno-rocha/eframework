@@ -3,6 +3,10 @@ package br.edu.ufcg.embedded.eframework.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -77,12 +81,19 @@ public class CardFragment extends Fragment {
                 return true;
 
             case R.id.goto_map:
-                return true;
+                MapFragment map_fragment = new MapFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, map_fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
 
             default:
-                return super.onOptionsItemSelected(item);
+                break;
 
         }
+        return true;
     }
 
 
