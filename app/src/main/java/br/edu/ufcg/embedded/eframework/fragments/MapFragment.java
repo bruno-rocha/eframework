@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.activities.MainActivity;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 
 
@@ -55,13 +56,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationManager locationManager;
     private String locationProvider;
     private android.location.LocationListener locationListener;
-    private boolean zoomCurrentLocation;
-    private List<Evento> listEvents;
     Location lastKnownLocation;
 
-    private LatLng lastLocation = new LatLng(0, 0);
-
-    private GoogleMap map;
+    private static GoogleMap map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,22 +68,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         setUpMap();
         mContext = getContext();
-        listEvents = getEvents();
         locationProvider = LocationManager.GPS_PROVIDER;
-        zoomCurrentLocation = false;
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-
+        lastKnownLocation = MainActivity.getmLastLocation();
 
         locationListener = new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                zoomCurrentLocation = false;
-                Log.i("latlong", "lat: " + location.getLatitude() + "\n long: " + location.getLongitude());
-                lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//                setMarkers(map, listEvents);
-//                if (!zoomCurrentLocation) {
-//                    zoomMapCurrentLocation();
-//                }
+//                Log.i("latlong", "lat: " + location.getLatitude() + "\n long: " + location.getLongitude());
+                zoomMapAtLocation(location);
             }
 
             @Override
@@ -96,7 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onProviderEnabled(String provider) {
-
+                zoomMapAtLocation(lastKnownLocation);
             }
 
             @Override
@@ -114,16 +104,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }, 10);
             return null;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 5, locationListener);
 
         return view;
     }
 
-    private void zoomMapCurrentLocation() {
-        LatLng lastKnownLatLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, ZOOM_SCALE);
-        map.animateCamera(cameraUpdate);
-        zoomCurrentLocation = true;
+    public static void zoomMapAtLocation(Location location) {
+        if (location != null){
+            LatLng lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, ZOOM_SCALE);
+            map.animateCamera(cameraUpdate);
+        }
     }
 
 
@@ -186,9 +177,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        getEvents();
     }
 
-    public GoogleMap getMap() {
+    public static GoogleMap getMap() {
         return map;
     }
 }
