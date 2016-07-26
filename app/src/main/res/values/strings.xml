@@ -14,4 +14,7 @@
     <string name="continuar_sem_login">Continuar sem login</string>
     <string name="url_server">http://www.mocky.io/v2/578fc2822600000d067ee421</string>
     <string name="cards">Lista de cards</string>
+    <string name="install">Instalar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="installing">Instalando evento...</string>
 </resources>
