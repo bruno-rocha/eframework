@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.activities.MainActivity;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 
 
@@ -56,35 +58,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Context mContext;
     private SupportMapFragment sMapFragment;
     private LocationManager locationManager;
+    private String locationProvider;
     private android.location.LocationListener locationListener;
-    private boolean zoomCurrentLocation;
+    Location lastKnownLocation;
 
-    private LatLng lastLocation = new LatLng(0,0);
-
-    private GoogleMap map;
+    private static GoogleMap map;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+
         setUpMap();
         mContext = getContext();
+<<<<<<< HEAD
         final List<Evento> listEvents = getEvents();
         setHasOptionsMenu(true);
 
         zoomCurrentLocation = false;
+=======
+        locationProvider = LocationManager.GPS_PROVIDER;
+>>>>>>> refs/remotes/origin/master
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        lastKnownLocation = MainActivity.getmLastLocation();
+
         locationListener = new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                zoomCurrentLocation = false;
-                Log.i("latlong", "lat: " + location.getLatitude() + "\n long: " + location.getLongitude());
-                lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                setMarkers(map, listEvents);
-                if (!zoomCurrentLocation){
-                    zoomMapCurrentLocation();
-                }
+//                Log.i("latlong", "lat: " + location.getLatitude() + "\n long: " + location.getLongitude());
+                zoomMapAtLocation(location);
             }
 
             @Override
@@ -94,7 +97,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onProviderEnabled(String provider) {
-
+                zoomMapAtLocation(lastKnownLocation);
             }
 
             @Override
@@ -117,28 +120,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private void zoomMapCurrentLocation() {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastLocation, ZOOM_SCALE);
-        map.animateCamera(cameraUpdate);
-        zoomCurrentLocation = true;
+    public static void zoomMapAtLocation(Location location) {
+        if (location != null){
+            LatLng lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, ZOOM_SCALE);
+            map.animateCamera(cameraUpdate);
+        }
     }
 
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                                           int[] grantResults){
-//        switch (requestCode){
-//            case 10:
-//                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-//                    configureButton();
-//                return;
-//        }
-//
-//    }
-//
-//    private void configureButton() {
-//
-//    }
 
     public List<Evento> getEvents() {
         final List<Evento> events = new ArrayList<>();
@@ -146,7 +135,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        for(int i = 0; i < response.length(); i++){
+                        for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject object = (JSONObject) response.get(i);
                                 String nome = object.getString("nome");
@@ -157,7 +146,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
                                 Log.d("TAG", evento.toString());
                                 events.add(evento);
-                            } catch (Exception e){
+                                setMarker(map, evento);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -179,12 +169,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return events;
     }
 
-    private void setMarkers(GoogleMap googleMap, List<Evento> listEvents){
-        for (Evento e: listEvents) {
+    private void setMarker(GoogleMap googleMap, Evento event) {
             googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(e.getLatitude(), e.getLongitude()))
-                    .title(e.getNome()).snippet(e.getDescricao()));
-        }
+                    .position(new LatLng(event.getLatitude(), event.getLongitude()))
+                    .title(event.getNome()).snippet(event.getDescricao()));
     }
 
     private void setUpMap() {
@@ -200,13 +188,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-//        setMarkers(googleMap);
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(40.417325, 40.417325))
-//                .title("Hello!"));
+        getEvents();
     }
 
-    public GoogleMap getMap() {
+    public static GoogleMap getMap() {
         return map;
     }
 
