@@ -8,6 +8,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,13 +55,36 @@ public class CardFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         eventos = getEvents();
-//        eventos_nome = getEventsNames(eventos);
+        setHasOptionsMenu(true);
+
+        //        eventos_nome = getEventsNames(eventos);
 //        adapter = new EventsAdapter(eventos_nome, mContext);
 //        recyclerView.setAdapter(adapter);
 
-
         return view;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_card, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+
+            case R.id.goto_map:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
 
     public List<Evento> getEvents() {
         final List<Evento> events = new ArrayList<>();
