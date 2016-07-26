@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -67,6 +71,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         setUpMap();
         mContext = getContext();
         final List<Evento> listEvents = getEvents();
+        setHasOptionsMenu(true);
 
         zoomCurrentLocation = false;
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -203,5 +208,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public GoogleMap getMap() {
         return map;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+
+            case R.id.goto_cards:
+                CardFragment card_fragment = new CardFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, card_fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+
+            default:
+                break;
+
+        }
+        return true;
     }
 }
