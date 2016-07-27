@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpFragments(){
         mapFragment = new MapFragment();
-        cardFragment = new CardFragment();
+//        cardFragment = new CardFragment();
 
         currentFragment = mapFragment;
 

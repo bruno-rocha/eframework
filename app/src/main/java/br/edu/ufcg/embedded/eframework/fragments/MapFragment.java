@@ -3,6 +3,7 @@ package br.edu.ufcg.embedded.eframework.fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -53,8 +56,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.activities.MainActivity;
@@ -161,6 +166,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
+    private void doTheSearchMap(String query) {
+        String string = removerAcentos(query);
+        ArrayList<Evento> result = new ArrayList<Evento>();
+        DataSource dataSource = DataSource.getInstance(getContext());
+        List<Evento> listEvents = dataSource.getEvents();
+        if (!string.equals("")) {
+            for (Evento item : listEvents) {
+                String nome = removerAcentos(item.getNome().toLowerCase());
+                if (nome.contains(query.toLowerCase())) {
+                    result.add(item);
+                }
+            }
+        }
+
+        updateMap(listEvents, result, query);
+    }
+
+    private void updateMap(List<Evento> eventos, ArrayList<Evento> result, String busca) {
+        map.clear();
+        if (result.size() > 0) {
+            for (Evento evento : result) {
+                setMarker(map, evento);
+            }
+        } else {
+            updateMap(eventos);
+        }
+    }
+
+    private void updateMap(List<Evento> eventos) {
+        map.clear();
+        for (Evento evento : eventos) {
+            setMarker(map, evento);
+        }
+    }
+
+    public static String removerAcentos(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
 
     public List<Evento> getEvents() {
         final List<Evento> events = new ArrayList<>();
@@ -270,7 +313,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_map, menu);
+        
+        searchListeners(menu);
+
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void searchListeners(Menu menu) {
+        final SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchItem = (MenuItem) menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doTheSearchMap(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+
+        });
+
+
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    DataSource dataSource = DataSource.getInstance(getContext());
+                    List<Evento> listEvents = dataSource.getEvents();
+                    updateMap(listEvents);
+                };
+            }
+        });
     }
 
     @Override
