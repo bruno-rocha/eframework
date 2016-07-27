@@ -1,12 +1,192 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/map_container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.MapFragment"
-    app:menu="@menu/menu_map">
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:id="@+id/fragment_maps_container">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="100"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/tela_total"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="100"
+            android:visibility="invisible"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
 
 
+            <View
+                android:id="@+id/tela_parte1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="41"
+                android:background="@drawable/background_transparente" />
 
-</FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/tela_parte2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_transparente" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circulo"
+                    android:layout_weight="2" />
+
+                <View
+                    android:id="@+id/tela_parte3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="6"
+                    android:background="@drawable/background_transparente" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/tela_parte4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="9"
+                android:background="@drawable/background_transparente" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/tela_parte5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_transparente" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="20"
+                    android:background="#fff"
+                    android:clickable="false"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/nomeDialog"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/nomeDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1.8"
+                        android:textColor="@color/black"/>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="end"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="#fff"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:layout_gravity="center|start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Inatall App"
+                            android:id="@+id/button" />
+
+                        <LinearLayout
+                            android:gravity="end"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true">
+
+                            <ImageView
+                                android:id="@+id/iv_rota"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_weight="1"
+                                android:layout_gravity="center|end"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_route"/>
+
+                            <!--<TextView-->
+                                <!--android:id="@+id/iv_rota_name"-->
+                                <!--android:layout_width="0dp"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_weight="1.47"-->
+                                <!--android:layout_gravity="center|end"-->
+                                <!--android:textColor="@color/blue"-->
+                                <!--android:text="@string/shout_route" />-->
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+                <View
+                    android:id="@+id/tela_parte6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_transparente" />
+
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/tela_parte7"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
+                android:background="@drawable/background_transparente" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
