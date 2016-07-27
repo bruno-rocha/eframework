@@ -70,7 +70,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
-        viewHolder.itemTitle.setOnClickListener(new View.OnClickListener(){
+        viewHolder.itemDownloader.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);

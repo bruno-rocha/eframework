@@ -48,8 +48,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="CardView"
                     android:id="@+id/cardTitle"
-                    android:textSize="15sp"
-                    android:clickable="true"/>
+                    android:textSize="15sp"/>
             </FrameLayout>
 
                 <ImageButton
@@ -62,6 +61,7 @@
                     android:layout_marginRight="8dp"
                     android:background="@mipmap/ic_downloader"
                     android:adjustViewBounds="false"
+                    android:clickable="true"
                     />
 
 
