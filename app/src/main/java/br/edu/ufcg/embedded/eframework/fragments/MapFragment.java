@@ -46,6 +46,7 @@ import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.activities.MainActivity;
+import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 
 
@@ -146,11 +147,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 e.printStackTrace();
                             }
                         }
-//
-//                        if (events.size() > 0){
-//                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
-//                            dataSource.saveAllUsers(listaUsers);
-//                        }
+
+                        if (events.size() > 0){
+                            DataSource dataSource = DataSource.getInstance(getContext());
+                            dataSource.saveAllEventos(events);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -199,9 +200,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-
             case R.id.goto_cards:
                 CardFragment card_fragment = new CardFragment();
                 FragmentManager fragmentManager = getFragmentManager();

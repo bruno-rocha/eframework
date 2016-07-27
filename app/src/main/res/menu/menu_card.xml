@@ -4,11 +4,21 @@
 
     <group android:checkableBehavior="single"
         android:id="@+id/menu_top_cards">
+
+        <item
+            android:id="@+id/action_search"
+            android:title="@string/search"
+            android:icon="@android:drawable/ic_menu_search"
+            app:showAsAction="ifRoom|collapseActionView"
+            app:actionViewClass="android.support.v7.widget.SearchView"
+            />
+
         <item
             android:id="@+id/goto_map"
             android:icon="@android:drawable/ic_dialog_map"
             android:title=""
             app:showAsAction="ifRoom"/>
+
 
     </group>
 </menu>

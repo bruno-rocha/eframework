@@ -4,6 +4,15 @@
 
     <group android:checkableBehavior="single"
         android:id="@+id/menu_top_maps">
+
+        <item
+            android:id="@+id/action_search"
+            android:title="@string/search"
+            android:icon="@android:drawable/ic_menu_search"
+            app:showAsAction="ifRoom|collapseActionView"
+            app:actionViewClass="android.support.v7.widget.SearchView"
+            />
+
         <item
             android:id="@+id/goto_cards"
             android:icon="@android:drawable/ic_dialog_dialer"

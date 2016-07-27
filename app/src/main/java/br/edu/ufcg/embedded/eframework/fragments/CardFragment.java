@@ -66,9 +66,62 @@ public class CardFragment extends Fragment {
         return view;
     }
 
+    private void doTheSearch(String query) {
+        String string = removerAcentos(query);
+        ArrayList<Evento> result = new ArrayList<Evento>();
+        DataSource dataSource = DataSource.getInstance(getContext());
+        List<Evento> listEvents = dataSource.getEvents();
+        if (!string.equals("")) {
+            for (Evento item : listEvents) {
+                String nome = removerAcentos(item.getNome().toLowerCase());
+                if (nome.contains(query.toLowerCase())) {
+                    result.add(item);
+                }
+            }
+        }
+
+        updateCards(listEvents, result, query);
+    }
+
+    private void updateCards(List<Evento> eventos, ArrayList<Evento> result, String busca) {
+        if (result.size() > 0) {
+            setAdapter(new EventsAdapter(result, getContext()));
+        } else {
+            if (busca.equals("")) {
+                setAdapter(new EventsAdapter(eventos, getContext()));
+            } else {
+                setAdapter(new EventsAdapter(result, getContext()));
+            }
+        }
+    }
+
+    public static String removerAcentos(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_card, menu);
+
+        final SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchItem = (MenuItem) menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doTheSearch(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                doTheSearch(newText);
+                return false;
+            }
+
+        });
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 

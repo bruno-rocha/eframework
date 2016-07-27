@@ -82,15 +82,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            if (currentFragment == mapFragment){
-                doTheSearchMap(query);
-            } else if (currentFragment == cardFragment){
-                doTheSearch(query);
-            }
-        }
+//        Intent intent = getIntent();
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            if (currentFragment == mapFragment){
+//                doTheSearchMap(query);
+//            } else if (currentFragment == cardFragment){
+//                doTheSearch(query);
+//            }
+//        }
 
         sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
 
@@ -173,113 +173,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final MenuItem searchItem = (MenuItem) menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (currentFragment == cardFragment) {
-                    doTheSearch(query);
-                } else if (currentFragment == mapFragment) {
-                    doTheSearchMap(query);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (currentFragment == cardFragment) {
-                    doTheSearch(newText);
-                }
-                return false;
-            }
-
-        });
-
         return true;
     }
 
-    private void doTheSearchMap(String query) {
-
-    }
-
-    private void doTheSearch(String query) {
-        String string = removerAcentos(query);
-        ArrayList<Evento> result = new ArrayList<Evento>();
-        DataSource dataSource = DataSource.getInstance(this);
-        List<Evento> listEvents = dataSource.getEvents();
-        if (!string.equals("")) {
-            for (Evento item : listEvents) {
-                String nome = removerAcentos(item.getNome().toLowerCase());
-                if (nome.contains(query.toLowerCase())) {
-                    result.add(item);
-                }
-            }
-        }
-
-        updateCards(listEvents, result, query);
-    }
-
-    private void updateCards(List<Evento> eventos, ArrayList<Evento> result, String busca) {
-        if (result.size() > 0) {
-            cardFragment.setAdapter(new EventsAdapter(result, this));
-        } else {
-            if (busca.equals("")) {
-                cardFragment.setAdapter(new EventsAdapter(eventos, this));
-            } else {
-                cardFragment.setAdapter(new EventsAdapter(result, this));
-            }
-        }
-    }
-
-    public static String removerAcentos(String str) {
-        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-    }
-
-    public List<Evento> getEvents() {
-        events = new ArrayList<>();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, getString(R.string.url_server),
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for(int i = 0; i < response.length(); i++){
-                            try {
-                                JSONObject object = (JSONObject) response.get(i);
-                                String nome = object.getString("nome");
-                                String descricao = object.getString("descricao");
-                                double latitude = object.getDouble("latitude");
-                                double longitude = object.getDouble("longitude");
-                                String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
-                                Log.d("TAG", evento.toString());
-                                events.add(evento);
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-
-
-
-//                        if (events.size() > 0){
-//                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
-//                            dataSource.saveAllUsers(listaUsers);
-//                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("eFramework", "Error: " + error.getMessage());
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(req);
-
-        return events;
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -304,32 +200,32 @@ public class MainActivity extends AppCompatActivity
         }
 
         switch (id) {
-            case R.id.map:
-                getSupportActionBar().setTitle(getString(R.string.app_name));
-                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
-                    fragmentTransaction.hide(currentFragment);
-                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
-                    fragmentTransaction.show(mapFragment).commit();
-                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
-                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
-                }
-                currentFragment = mapFragment;
-                lastFragment = R.id.map;
-                break;
-
-            case R.id.card:
-                getSupportActionBar().setTitle(getString(R.string.app_name));
-                if (fragmentManager.findFragmentByTag(CARD_TAG) == null) {
-                    fragmentTransaction.hide(currentFragment);
-                    fragmentTransaction.add(R.id.fragment_container, cardFragment, CARD_TAG);
-                    fragmentTransaction.show(cardFragment).commit();
-                } else if (!fragmentManager.findFragmentByTag(CARD_TAG).isVisible()) {
-                    fragmentTransaction.hide(currentFragment).show(cardFragment).commit();
-                }
-                currentFragment = cardFragment;
-                lastFragment = R.id.card;
-                break;
-
+//            case R.id.map:
+//                getSupportActionBar().setTitle(getString(R.string.app_name));
+//                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
+//                    fragmentTransaction.hide(currentFragment);
+//                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
+//                    fragmentTransaction.show(mapFragment).commit();
+//                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
+//                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
+//                }
+//                currentFragment = mapFragment;
+//                lastFragment = R.id.map;
+//                break;
+//
+//            case R.id.card:
+//                getSupportActionBar().setTitle(getString(R.string.app_name));
+//                if (fragmentManager.findFragmentByTag(CARD_TAG) == null) {
+//                    fragmentTransaction.hide(currentFragment);
+//                    fragmentTransaction.add(R.id.fragment_container, cardFragment, CARD_TAG);
+//                    fragmentTransaction.show(cardFragment).commit();
+//                } else if (!fragmentManager.findFragmentByTag(CARD_TAG).isVisible()) {
+//                    fragmentTransaction.hide(currentFragment).show(cardFragment).commit();
+//                }
+//                currentFragment = cardFragment;
+//                lastFragment = R.id.card;
+//                break;
+//
 
             case R.id.logout:
                 signOut();
