@@ -72,16 +72,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         setUpMap();
         mContext = getContext();
-<<<<<<< HEAD
         final List<Evento> listEvents = getEvents();
         setHasOptionsMenu(true);
 
-        zoomCurrentLocation = false;
-=======
         locationProvider = LocationManager.GPS_PROVIDER;
->>>>>>> refs/remotes/origin/master
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        lastKnownLocation = MainActivity.getmLastLocation();
 
         locationListener = new android.location.LocationListener() {
             @Override
