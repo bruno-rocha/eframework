@@ -17,4 +17,8 @@
     <string name="install">Instalar</string>
     <string name="cancel">Cancelar</string>
     <string name="installing">Instalando evento...</string>
+    <string name="shout_route">Traçar Rota</string>
+    <string name="aguarde">Aguarde</string>
+    <string name="capturando_posicao">Estamos capturando sua posição</string>
+
 </resources>
