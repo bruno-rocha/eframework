@@ -1,13 +1,19 @@
 package br.edu.ufcg.embedded.eframework.fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,24 +28,24 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.activities.MainActivity;
+import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 import br.edu.ufcg.embedded.eframework.utils.EventsAdapter;
 
-/**
- * Created by Treinamento Asus on 20/07/2016.
- */
 public class CardFragment extends Fragment {
 
     private Context mContext;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<Evento> eventos = new ArrayList<>();
-    private List<String> eventos_nome;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,10 +58,6 @@ public class CardFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         eventos = getEvents();
-//        eventos_nome = getEventsNames(eventos);
-//        adapter = new EventsAdapter(eventos_nome, mContext);
-//        recyclerView.setAdapter(adapter);
-
 
         return view;
     }
@@ -84,10 +86,11 @@ public class CardFragment extends Fragment {
 
                         adapter = new EventsAdapter(eventos, mContext);
                         recyclerView.setAdapter(adapter);
-//                        if (events.size() > 0){
-//                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
-//                            dataSource.saveAllUsers(listaUsers);
-//                        }
+
+                        if (events.size() > 0){
+                            DataSource dataSource = DataSource.getInstance(getContext());
+                            dataSource.saveAllEventos(eventos);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -102,5 +105,7 @@ public class CardFragment extends Fragment {
         return events;
     }
 
-
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        recyclerView.setAdapter(adapter);
+    }
 }

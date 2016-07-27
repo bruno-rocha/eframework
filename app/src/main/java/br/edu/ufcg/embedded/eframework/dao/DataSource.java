@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.models.Amigo;
+import br.edu.ufcg.embedded.eframework.models.Evento;
 import br.edu.ufcg.embedded.eframework.models.User;
 
 
@@ -41,6 +42,10 @@ public class DataSource {
         return getDatabase().delete(dbHelper.AMIGO, null, null);
     }
 
+    public int deleteAllEventos() {
+        return getDatabase().delete(dbHelper.EVENTO, null, null);
+    }
+
     public int deleteAllUsers() {
         return getDatabase().delete(dbHelper.USUARIO, null, null);
     }
@@ -56,6 +61,19 @@ public class DataSource {
         }
         cursor.close();
         return amigos;
+    }
+
+    public List<Evento> getEvents() {
+        Cursor cursor = getDatabase().query(dbHelper.EVENTO,
+                dbHelper.COLUNAS_EVENTO, null , null, null, null, null, null);
+
+        List<Evento> eventos = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Evento model = createEvento(cursor);
+            eventos.add(model);
+        }
+        cursor.close();
+        return eventos;
     }
 
 
@@ -101,6 +119,23 @@ public class DataSource {
         return true;
     }
 
+    public boolean saveAllEventos(List<Evento> eventos) {
+        deleteAllEventos();
+        for (Evento evento : eventos){
+            ContentValues valores = new ContentValues();
+            valores.put(dbHelper.NOME_EVENTO, evento.getNome());
+            valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
+            valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
+            valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
+            valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
+
+            if(getDatabase().insert(dbHelper.EVENTO, null, valores) < 1){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private Amigo createAmigo(Cursor cursor) {
         Amigo model = new Amigo(cursor.getString(cursor.getColumnIndex(dbHelper.ID_AMIGO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.NOME_AMIGO)),
@@ -108,6 +143,18 @@ public class DataSource {
         );
         return model;
     }
+
+    private Evento createEvento(Cursor cursor) {
+        Evento model = new Evento(
+                cursor.getString(cursor.getColumnIndex(dbHelper.NOME_EVENTO)),
+                cursor.getString(cursor.getColumnIndex(dbHelper.DESCRICAO_EVENTO)),
+                cursor.getDouble(cursor.getColumnIndex(dbHelper.LATITUDE_EVENTO)),
+                cursor.getDouble(cursor.getColumnIndex(dbHelper.LONGITUDE_EVENTO)),
+                cursor.getString(cursor.getColumnIndex(dbHelper.URL_IMAGEM_EVENTO))
+        );
+        return model;
+    }
+
 
     private User createUser(Cursor cursor) {
         User model = new User(cursor.getString(cursor.getColumnIndex(dbHelper.ID_USUARIO)),

@@ -1,5 +1,7 @@
 package br.edu.ufcg.embedded.eframework.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +10,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,9 +21,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -29,10 +41,20 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.fragments.CardFragment;
 import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
+import br.edu.ufcg.embedded.eframework.models.Evento;
 import br.edu.ufcg.embedded.eframework.utils.CircleTransform;
+import br.edu.ufcg.embedded.eframework.utils.EventsAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -51,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private int lastFragment;
     private Fragment currentFragment;
+    private ArrayList<Evento> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +81,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            if (currentFragment == mapFragment){
+                doTheSearchMap(query);
+            } else if (currentFragment == cardFragment){
+                doTheSearch(query);
+            }
+        }
 
         sharedPreferences = getSharedPreferences(SplashActivity.PREFERENCE_NAME, MODE_PRIVATE);
 
@@ -137,23 +170,122 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchItem = (MenuItem) menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (currentFragment == cardFragment) {
+                    doTheSearch(query);
+                } else if (currentFragment == mapFragment) {
+                    doTheSearchMap(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (currentFragment == cardFragment) {
+                    doTheSearch(newText);
+                }
+                return false;
+            }
+
+        });
+
         return true;
     }
 
+    private void doTheSearchMap(String query) {
+
+    }
+
+    private void doTheSearch(String query) {
+        String string = removerAcentos(query);
+        ArrayList<Evento> result = new ArrayList<Evento>();
+        DataSource dataSource = DataSource.getInstance(this);
+        List<Evento> listEvents = dataSource.getEvents();
+        if (!string.equals("")) {
+            for (Evento item : listEvents) {
+                String nome = removerAcentos(item.getNome().toLowerCase());
+                if (nome.contains(query.toLowerCase())) {
+                    result.add(item);
+                }
+            }
+        }
+
+        updateCards(listEvents, result, query);
+    }
+
+    private void updateCards(List<Evento> eventos, ArrayList<Evento> result, String busca) {
+        if (result.size() > 0) {
+            cardFragment.setAdapter(new EventsAdapter(result, this));
+        } else {
+            if (busca.equals("")) {
+                cardFragment.setAdapter(new EventsAdapter(eventos, this));
+            } else {
+                cardFragment.setAdapter(new EventsAdapter(result, this));
+            }
+        }
+    }
+
+    public static String removerAcentos(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
+
+    public List<Evento> getEvents() {
+        events = new ArrayList<>();
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, getString(R.string.url_server),
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for(int i = 0; i < response.length(); i++){
+                            try {
+                                JSONObject object = (JSONObject) response.get(i);
+                                String nome = object.getString("nome");
+                                String descricao = object.getString("descricao");
+                                double latitude = object.getDouble("latitude");
+                                double longitude = object.getDouble("longitude");
+                                String url_foto = object.getString("url_photo");
+                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
+                                Log.d("TAG", evento.toString());
+                                events.add(evento);
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+
+
+
+//                        if (events.size() > 0){
+//                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
+//                            dataSource.saveAllUsers(listaUsers);
+//                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("eFramework", "Error: " + error.getMessage());
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(req);
+
+        return events;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
