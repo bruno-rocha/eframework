@@ -15,9 +15,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:foreground="?android:attr/selectableItemBackground"
             android:id="@+id/cardView"
             android:layout_marginBottom="10dp">
+           -- android:foreground="?android:attr/selectableItemBackground">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -33,7 +33,8 @@
                     android:src="@mipmap/ic_launcher"
                     android:adjustViewBounds="true"
                     android:scaleType="center"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                   />
                 <FrameLayout
                     android:layout_width="321dp"
                     android:layout_height="wrap_content"
@@ -41,26 +42,27 @@
                     android:background="#96ffffff"
                     android:padding="10dp"
                     android:layout_gravity="bottom">
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="CardView"
                     android:id="@+id/cardTitle"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/black"
-                    android:background="#96ffffff" />
-                </FrameLayout>
+                    android:textSize="15sp"/>
+            </FrameLayout>
 
                 <ImageButton
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/cardDownload"
                     android:layout_gravity="right|bottom"
-                    android:padding="10dp"
-                    android:background="@drawable/ic_launcher" />
+                    android:padding="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@mipmap/ic_downloader"
+                    android:adjustViewBounds="false"
+                    android:clickable="true"
+                    />
 
 
             </FrameLayout>

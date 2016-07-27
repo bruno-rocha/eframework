@@ -1,11 +1,13 @@
 package br.edu.ufcg.embedded.eframework.utils;
-import android.app.usage.UsageEvents;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         public TextView itemTitle;
         public CardView cardView;
         public RecyclerView recyclerView;
+        public ImageButton itemDownloader;
 
         public EventsHolder(View itemView) {
             super(itemView);
@@ -42,6 +45,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
             img = (ImageView) itemView.findViewById(R.id.cardImage);
+            itemDownloader = (ImageButton) itemView.findViewById(R.id.cardDownload);
+
 
         }
 
@@ -61,10 +66,33 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }
 
     @Override
-    public void onBindViewHolder(EventsHolder viewHolder, int i) {
+    public void onBindViewHolder(EventsHolder viewHolder, final int i) {
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
+        viewHolder.itemDownloader.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setCancelable(false);
+                dialog.setPositiveButton(context.getString(R.string.install), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, context.getString(R.string.installing), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setTitle(eventos.get(i).getNome());
+                dialog.setMessage(eventos.get(i).getDescricao());
+                dialog.create();
+                dialog.show();
+            }
+        });
 
     }
 
