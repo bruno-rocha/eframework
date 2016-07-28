@@ -127,20 +127,20 @@ public class CardFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.goto_map:
-                MapFragment map_fragment = new MapFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, map_fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                break;
-
-            default:
-                break;
-
-        }
+//        switch (item.getItemId()) {
+//            case R.id.goto_map:
+//                MapFragment map_fragment = new MapFragment();
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.fragment_container, map_fragment);
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
+//                break;
+//
+//            default:
+//                break;
+//
+//        }
         return true;
     }
 

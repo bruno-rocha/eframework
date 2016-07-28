@@ -47,11 +47,13 @@ import org.json.JSONObject;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.fragments.CardFragment;
 import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
+import br.edu.ufcg.embedded.eframework.fragments.MyEventsFragment;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 import br.edu.ufcg.embedded.eframework.utils.CircleTransform;
 import br.edu.ufcg.embedded.eframework.utils.EventsAdapter;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final String MAP_TAG = "MAP_TAG";
     public static final String CARD_TAG = "CARD_TAG";
+    public static final String MY_EVENTS_TAG = "MY_EVENTS_TAG";
 
 
     private SharedPreferences sharedPreferences;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     private TextView emailUsr;
     private ImageView imgUsr;
     private MapFragment mapFragment;
+    private MyEventsFragment myEventsFragment;
     private CardFragment cardFragment;
     private FragmentManager fragmentManager;
     private int lastFragment;
@@ -133,6 +137,8 @@ public class MainActivity extends AppCompatActivity
 
     private void setUpFragments(){
         mapFragment = new MapFragment();
+        myEventsFragment = new MyEventsFragment();
+        cardFragment = new CardFragment();
 //        cardFragment = new CardFragment();
 
         currentFragment = mapFragment;
@@ -183,7 +189,37 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        return super.onOptionsItemSelected(item);
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        switch (id) {
+            case R.id.goto_cards:
+                if (fragmentManager.findFragmentByTag(CARD_TAG) == null) {
+                fragmentTransaction.hide(currentFragment);
+                fragmentTransaction.add(R.id.fragment_container, cardFragment, CARD_TAG);
+                fragmentTransaction.show(cardFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(CARD_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(cardFragment).commit();
+                }
+                currentFragment = cardFragment;
+                lastFragment = R.id.goto_cards;
+                break;
+
+            case R.id.goto_map:
+                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
+                    fragmentTransaction.show(mapFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
+                }
+                currentFragment = mapFragment;
+                lastFragment = R.id.goto_map;
+                break;
+
+        }
+
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -200,32 +236,32 @@ public class MainActivity extends AppCompatActivity
         }
 
         switch (id) {
-//            case R.id.map:
-//                getSupportActionBar().setTitle(getString(R.string.app_name));
-//                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
-//                    fragmentTransaction.hide(currentFragment);
-//                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
-//                    fragmentTransaction.show(mapFragment).commit();
-//                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
-//                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
-//                }
-//                currentFragment = mapFragment;
-//                lastFragment = R.id.map;
-//                break;
-//
-//            case R.id.card:
-//                getSupportActionBar().setTitle(getString(R.string.app_name));
-//                if (fragmentManager.findFragmentByTag(CARD_TAG) == null) {
-//                    fragmentTransaction.hide(currentFragment);
-//                    fragmentTransaction.add(R.id.fragment_container, cardFragment, CARD_TAG);
-//                    fragmentTransaction.show(cardFragment).commit();
-//                } else if (!fragmentManager.findFragmentByTag(CARD_TAG).isVisible()) {
-//                    fragmentTransaction.hide(currentFragment).show(cardFragment).commit();
-//                }
-//                currentFragment = cardFragment;
-//                lastFragment = R.id.card;
-//                break;
-//
+
+            case R.id.home:
+                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (fragmentManager.findFragmentByTag(MAP_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, mapFragment, MAP_TAG);
+                    fragmentTransaction.show(mapFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(MAP_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(mapFragment).commit();
+                }
+                currentFragment = mapFragment;
+                lastFragment = R.id.home;
+                break;
+            case R.id.my_events:
+                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (fragmentManager.findFragmentByTag(MY_EVENTS_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, myEventsFragment, MY_EVENTS_TAG);
+                    fragmentTransaction.show(myEventsFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(MY_EVENTS_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(myEventsFragment).commit();
+                }
+                currentFragment = myEventsFragment;
+                lastFragment = R.id.my_events;
+                break;
+
 
             case R.id.logout:
                 signOut();

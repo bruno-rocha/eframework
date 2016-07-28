@@ -10,6 +10,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="eventos">Eventos</string>
+    <string name="my_events">Meus Eventos</string>
+    <string name="home">Início</string>
     <string name="logout">Logout</string>
     <string name="continuar_sem_login">Continuar sem login</string>
     <string name="url_server">http://www.mocky.io/v2/578fc2822600000d067ee421</string>
