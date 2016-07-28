@@ -80,9 +80,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private android.location.LocationListener locationListener;
     private Location lastKnownLocation;
     private View rootView;
+    private View parteTotalView;
 
     private boolean markerDescriptionVisible;
     private boolean isMarkerSelected;
+
+    private SearchView searchView;
+    private MenuItem searchItem;
+    private SearchManager searchManager;
 
 
     private boolean myLocationWasClicked;
@@ -171,10 +176,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         ArrayList<Evento> result = new ArrayList<Evento>();
         DataSource dataSource = DataSource.getInstance(getContext());
         List<Evento> listEvents = dataSource.getEvents();
-        if (!string.equals("")) {
+        if (string.equals("")) {
+            //Busca Vazia
+        } else {
             for (Evento item : listEvents) {
                 String nome = removerAcentos(item.getNome().toLowerCase());
-                if (nome.contains(query.toLowerCase())) {
+                if (nome.contains(string.toLowerCase())) {
                     result.add(item);
                 }
             }
@@ -190,7 +197,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 setMarker(map, evento);
             }
         } else {
-            updateMap(eventos);
+            //Busca Vazia
+//            updateMap(eventos);
         }
     }
 
@@ -274,7 +282,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         googleMap.setOnMarkerClickListener(this);
 
-        View parteTotalView = rootView.findViewById(R.id.tela_total);
+        parteTotalView = rootView.findViewById(R.id.tela_total);
         parteTotalView.setVisibility(View.INVISIBLE);
         View parte1View = rootView.findViewById(R.id.tela_parte1);
         disable(parte1View);
@@ -320,9 +328,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void searchListeners(Menu menu) {
-        final SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final MenuItem searchItem = (MenuItem) menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchItem = (MenuItem) menu.findItem(R.id.action_search);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -333,21 +341,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                parteTotalView.setVisibility(View.INVISIBLE);
                 return false;
             }
-
-
         });
-
 
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                if (parteTotalView.getVisibility() == View.VISIBLE){
+                    parteTotalView.setVisibility(View.INVISIBLE);
+                }
                 if (!hasFocus) {
                     DataSource dataSource = DataSource.getInstance(getContext());
                     List<Evento> listEvents = dataSource.getEvents();
                     updateMap(listEvents);
-                };
+                }
+
             }
         });
     }
@@ -373,7 +383,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public boolean onMarkerClick(Marker markerAux) {
-
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(markerAux.getPosition())
                 .zoom(map.getCameraPosition().zoom)
