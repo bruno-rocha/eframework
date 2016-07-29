@@ -76,6 +76,19 @@ public class DataSource {
         return eventos;
     }
 
+    public List<Evento> getEventsInteresse() {
+        Cursor cursor = getDatabase().query(dbHelper.EVENTO,
+                dbHelper.COLUNAS_EVENTO, dbHelper.INTERESSE_EVENTO + " = '1'" , null, null, null, null, null);
+
+        List<Evento> eventos = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Evento model = createEvento(cursor);
+            eventos.add(model);
+        }
+        cursor.close();
+        return eventos;
+    }
+
 
     public List<User> getUsers() {
         Cursor cursor = getDatabase().query(dbHelper.USUARIO,
@@ -129,13 +142,19 @@ public class DataSource {
             valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
             valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
 
+            if (evento.haveInteresse()) {
+                valores.put(dbHelper.INTERESSE_EVENTO, 1);
+            } else {
+                valores.put(dbHelper.INTERESSE_EVENTO, 0);
+            }
+
             if(getDatabase().insert(dbHelper.EVENTO, null, valores) < 1){
                 return false;
             }
         }
         return true;
     }
-
+    
     private Amigo createAmigo(Cursor cursor) {
         Amigo model = new Amigo(cursor.getString(cursor.getColumnIndex(dbHelper.ID_AMIGO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.NOME_AMIGO)),
@@ -145,12 +164,18 @@ public class DataSource {
     }
 
     private Evento createEvento(Cursor cursor) {
+        boolean interesse = false;
+
+        if (cursor.getInt(cursor.getColumnIndex(dbHelper.INTERESSE_EVENTO)) == 1) {
+            interesse = true;
+        }
         Evento model = new Evento(
                 cursor.getString(cursor.getColumnIndex(dbHelper.NOME_EVENTO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.DESCRICAO_EVENTO)),
                 cursor.getDouble(cursor.getColumnIndex(dbHelper.LATITUDE_EVENTO)),
                 cursor.getDouble(cursor.getColumnIndex(dbHelper.LONGITUDE_EVENTO)),
-                cursor.getString(cursor.getColumnIndex(dbHelper.URL_IMAGEM_EVENTO))
+                cursor.getString(cursor.getColumnIndex(dbHelper.URL_IMAGEM_EVENTO)),
+                interesse
         );
         return model;
     }

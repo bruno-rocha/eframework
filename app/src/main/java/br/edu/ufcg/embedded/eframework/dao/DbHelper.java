@@ -18,9 +18,10 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String LATITUDE_EVENTO = "latitude_evento";
     public static final String LONGITUDE_EVENTO = "longitude_evento";
     public static final String URL_IMAGEM_EVENTO = "url_imagem_evento";
+    public static final String INTERESSE_EVENTO = "interesse_evento";
 
     public static final String[] COLUNAS_EVENTO = new String []{
-            ID, NOME_EVENTO, DESCRICAO_EVENTO, LATITUDE_EVENTO, LONGITUDE_EVENTO, URL_IMAGEM_EVENTO
+            ID, NOME_EVENTO, DESCRICAO_EVENTO, LATITUDE_EVENTO, LONGITUDE_EVENTO, URL_IMAGEM_EVENTO, INTERESSE_EVENTO
     };
 
     public static final String AMIGO = "AMIGO";
@@ -40,7 +41,7 @@ public class DbHelper extends SQLiteOpenHelper {
             ID, ID_USUARIO, NOME_USUARIO
     };
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME = "APP_BD";
 
     public DbHelper(Context context) {
@@ -71,6 +72,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
         dataBase.execSQL("CREATE TABLE " + EVENTO + "(_id integer primary key autoincrement, "
                 + NOME_EVENTO + " text, " + DESCRICAO_EVENTO + " text, "
-                + LATITUDE_EVENTO + " integer, " + LONGITUDE_EVENTO + " integer, " + URL_IMAGEM_EVENTO + " text);");
+                + LATITUDE_EVENTO + " integer, " + LONGITUDE_EVENTO + " integer, " + URL_IMAGEM_EVENTO + " text, " + INTERESSE_EVENTO + " flag integer default 0);");
     }
 }

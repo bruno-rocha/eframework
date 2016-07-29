@@ -94,18 +94,35 @@
                     android:clickable="false"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/nomeDialog"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="start"
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black" />
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp">
+
+                        <TextView
+                            android:id="@+id/nomeDialog"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="5dp" />
+
+                        <ToggleButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/star_btn"
+                            android:layout_weight="1"
+                            android:textOff=""
+                            android:textOn=""
+                            android:background="@drawable/star_toggle"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/nomeDescription"
@@ -114,7 +131,7 @@
                         android:layout_gravity="start"
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_weight="1.8"
+                        android:layout_weight="1"
                         android:textColor="@color/black"/>
 
 

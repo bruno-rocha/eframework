@@ -27,9 +27,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -227,7 +229,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                 double latitude = object.getDouble("latitude");
                                 double longitude = object.getDouble("longitude");
                                 String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
+                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
                                 Log.d("TAG", evento.toString());
                                 events.add(evento);
                                 setMarker(map, evento);
@@ -412,6 +414,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         tvDescricao.setText(markerAux.getSnippet());
         ImageView ivRota = ((ImageView) rootView.findViewById(R.id.iv_rota));
 //        TextView ivRotaName = ((TextView) rootView.findViewById(R.id.iv_rota_name));
+
+        ToggleButton star_button = (ToggleButton) rootView.findViewById(R.id.star_btn);
+        star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         View.OnClickListener onTracarClick = new View.OnClickListener() {
             @Override

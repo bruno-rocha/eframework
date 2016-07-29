@@ -159,7 +159,7 @@ public class CardFragment extends Fragment {
                                 double latitude = object.getDouble("latitude");
                                 double longitude = object.getDouble("longitude");
                                 String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto);
+                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
                                 Log.d("TAG", evento.toString());
                                 events.add(evento);
                             } catch (Exception e){
