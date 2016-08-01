@@ -1,17 +1,16 @@
 package br.edu.ufcg.embedded.eframework.utils;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,18 +25,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     private List<Evento> eventos;
     private Context context;
 
-    private static final int DURATION = 250;
-
     static class EventsHolder extends RecyclerView.ViewHolder{
 
         private final ImageView img;
         public TextView itemTitle;
         public CardView cardView;
         public RecyclerView recyclerView;
-        public ImageView expand_button;
-        public TextView itemResume;
-        public ViewGroup linearLayoutDetails;
-        public TextView itemDetails;
+        public ImageButton itemDownloader;
 
         public EventsHolder(View itemView) {
             super(itemView);
@@ -51,11 +45,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
             img = (ImageView) itemView.findViewById(R.id.cardImage);
-            expand_button = (ImageView) itemView.findViewById(R.id.list_item_expand_button);
-            itemResume = (TextView) itemView.findViewById(R.id.cardResumo);
-            linearLayoutDetails = (ViewGroup) itemView.findViewById(R.id.linearLayoutDetails);
-            itemDetails = (TextView) itemView.findViewById(R.id.cardDetails);
+            itemDownloader = (ImageButton) itemView.findViewById(R.id.cardDownload);
+
+
         }
+
     }
 
     public EventsAdapter(List<Evento> lista_eventos, Context context){
@@ -72,40 +66,34 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     }
 
     @Override
-    public void onBindViewHolder(final EventsHolder viewHolder, final int i) {
+    public void onBindViewHolder(EventsHolder viewHolder, final int i) {
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
-        viewHolder.expand_button.setOnClickListener(new View.OnClickListener(){
+        viewHolder.itemDownloader.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (viewHolder.linearLayoutDetails.getVisibility() == View.GONE) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setCancelable(false);
+                dialog.setPositiveButton(context.getString(R.string.install), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, context.getString(R.string.installing), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setTitle(eventos.get(i).getNome());
+                dialog.setMessage(eventos.get(i).getDescricao());
+                dialog.create();
+                dialog.show();
+            }
+        });
 
-                    ExpandAndCollapseViewUtil.expand(viewHolder.linearLayoutDetails, DURATION);
-                    viewHolder.itemDetails.setText(eventos.get(i).getDescricao());
-                    viewHolder.expand_button.setImageResource(R.mipmap.ic_more);
-                    rotate(viewHolder, 180.0f);
-
-                } else {
-                    ExpandAndCollapseViewUtil.collapse(viewHolder.linearLayoutDetails, DURATION);
-                    viewHolder.expand_button.setImageResource(R.mipmap.ic_less);
-                    rotate(viewHolder, -180.0f);
-
-                }
-
-                }
-
-            });
-
-        viewHolder.expand_button.setImageResource(R.mipmap.ic_more);
-    }
-
-    private void rotate(EventsHolder viewHolder, float toDegrees) {
-        Animation animation = new RotateAnimation(0.0f, toDegrees, Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setFillAfter(true);
-        animation.setDuration(DURATION);
-        viewHolder.expand_button.startAnimation(animation);
     }
 
     @Override
