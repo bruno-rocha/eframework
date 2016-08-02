@@ -17,6 +17,7 @@
     <string name="url_server">http://www.mocky.io/v2/578fc2822600000d067ee421</string>
     <string name="cards">Lista de cards</string>
     <string name="install">Instalar</string>
+    <string name="open">Abrir</string>
     <string name="cancel">Cancelar</string>
     <string name="installing">Instalando evento...</string>
     <string name="shout_route">Traçar Rota</string>
