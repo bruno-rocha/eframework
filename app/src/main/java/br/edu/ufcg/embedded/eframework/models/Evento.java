@@ -66,12 +66,38 @@ public class Evento {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Evento evento = (Evento) o;
+
+        if (Double.compare(evento.latitude, latitude) != 0) return false;
+        if (Double.compare(evento.longitude, longitude) != 0) return false;
+        return nome != null ? nome.equals(evento.nome) : evento.nome == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = nome != null ? nome.hashCode() : 0;
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Evento{" +
                 "nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
+                ", interesse=" + interesse +
                 '}';
     }
 }

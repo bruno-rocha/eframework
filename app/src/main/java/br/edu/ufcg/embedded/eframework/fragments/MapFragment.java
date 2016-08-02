@@ -419,12 +419,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Evento evento;
+//                DataSource dataSource = DataSource.getInstance(getContext());
+//                Log.d("TESTE0", dataSource.getEvents().toString());
                 if (isChecked) {
+                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
                     Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 } else {
+                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
                     Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 }
+                DataSource dataSource = DataSource.getInstance(getContext());
+                dataSource.saveFavorito(evento);
+//
+////                Log.d("TESTE", dataSource.getEvents().toString());
+//                Log.d("TESTE1", dataSource.getEvents().toString());
+//                Log.d("TESTE2", dataSource.getEventsInteresse().toString());
             }
+
         });
 
         View.OnClickListener onTracarClick = new View.OnClickListener() {

@@ -103,6 +103,33 @@ public class DataSource {
         return users;
     }
 
+    public boolean saveFavorito(Evento evento) {
+        List<Evento> eventos = getEvents();
+        for (Evento ev: eventos) {
+            if (ev.equals(evento)){
+                ContentValues valores = new ContentValues();
+//                valores.put(dbHelper.NOME_EVENTO, ev.getNome());
+//                valores.put(dbHelper.DESCRICAO_EVENTO, ev.getDescricao());
+//                valores.put(dbHelper.LATITUDE_EVENTO, ev.getLatitude());
+//                valores.put(dbHelper.LONGITUDE_EVENTO, ev.getLongitude());
+//                valores.put(dbHelper.URL_IMAGEM_EVENTO, ev.getUrlFoto());
+
+                valores.put(dbHelper.INTERESSE_EVENTO, 1);
+                if (!evento.haveInteresse()) {
+                    valores.put(dbHelper.INTERESSE_EVENTO, 0);
+                }
+
+                if(getDatabase().update(dbHelper.EVENTO, valores, dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+                        +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
+                        +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
+                        + "'", null) < 1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean saveAllUsers(List<User> usuarios) {
         deleteAllUsers();
         for (User usuario : usuarios){
