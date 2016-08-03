@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
@@ -102,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             mLocation = location;
             if (myLocationWasClicked) {
                 myLocationWasClicked = false;
-                moveToMyLocation();
+//                moveToMyLocation();
             }
         }
     };
@@ -127,7 +128,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             @Override
             public void onLocationChanged(Location location) {
 //                Log.i("latlong", "lat: " + location.getLatitude() + "\n long: " + location.getLongitude());
-                zoomMapAtLocation(location);
+//                zoomMapAtLocation(location);
             }
 
             @Override
@@ -147,26 +148,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         };
 
-        locationManager = (LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
+//        locationManager = (LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-            }, 10);
-            return null;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 5, locationListener);
+//        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{
+//                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+//            }, 10);
+//            return null;
+//        }
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 5, locationListener);
+
+        lastKnownLocation = getMyLocation();
 
         return rootView;
     }
 
-    private void moveToMyLocation() {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLocation, ZOOM_SCALE);
-        map.animateCamera(cameraUpdate);
-    }
+//    private void moveToMyLocation() {
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLocation, ZOOM_SCALE);
+//        map.animateCamera(cameraUpdate);
+//    }
 
     public static void zoomMapAtLocation(Location location) {
-        if (location != null){
+        if (location != null) {
             LatLng lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, ZOOM_SCALE);
             map.animateCamera(cameraUpdate);
@@ -238,7 +241,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             }
                         }
 
-                        if (events.size() > 0){
+                        if (events.size() > 0) {
                             DataSource dataSource = DataSource.getInstance(getContext());
                             dataSource.saveAllEventos(events);
                         }
@@ -256,9 +259,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void setMarker(GoogleMap googleMap, Evento event) {
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(event.getLatitude(), event.getLongitude()))
-                    .title(event.getNome()).snippet(event.getDescricao()));
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(event.getLatitude(), event.getLongitude()))
+                .title(event.getNome()).snippet(event.getDescricao()));
     }
 
     private void setUpMap() {
@@ -276,13 +279,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         map = googleMap;
         getEvents();
 
-        googleMap.setOnMyLocationChangeListener(mLocationListener);
-
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+//        googleMap.setOnMyLocationChangeListener(mLocationListener);
+//        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-
         googleMap.setOnMarkerClickListener(this);
+
+        zoomMapAtLocation(lastKnownLocation);
 
         parteTotalView = rootView.findViewById(R.id.tela_total);
         parteTotalView.setVisibility(View.INVISIBLE);
@@ -300,6 +303,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         disable(parte6View);
         View parte7View = rootView.findViewById(R.id.tela_parte7);
         disable(parte7View);
+    }
+
+    private Location getMyLocation() {
+        // Get location from GPS if it's available
+        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return null;
+        }
+
+        // Location wasn't found, check the next most accurate place for the current location
+        if (myLocation == null) {
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            // Finds a provider that matches the criteria
+            String provider = locationManager.getBestProvider(criteria, true);
+            // Use the provider to get the last known location
+            myLocation = locationManager.getLastKnownLocation(provider);
+        }
+
+        return myLocation;
     }
 
     private void disable(View parte1View) {
