@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,11 +40,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         public TextView itemTitle;
         public CardView cardView;
         public RecyclerView recyclerView;
-        public ImageButton expand_button;
-        public TextView itemResume;
-        public ViewGroup linear_layout_details;
-        public TextView itemDetails;
         public CompoundButton star_button;
+        public Button install_button;
 
 
         public EventsHolder(View itemView) {
@@ -58,11 +56,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
             img = (ImageView) itemView.findViewById(R.id.cardImage);
-            expand_button = (ImageButton) itemView.findViewById(R.id.expand_button);
-            itemResume = (TextView) itemView.findViewById(R.id.cardResume);
-            itemDetails = (TextView) itemView.findViewById(R.id.cardDetails);
-            linear_layout_details = (ViewGroup) itemView.findViewById(R.id.layout_expand);
             star_button = (ToggleButton) itemView.findViewById(R.id.star_btn);
+            install_button = (Button) itemView.findViewById(R.id.install_button);
 
 
 
@@ -89,27 +84,23 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         viewHolder.star_button.setChecked(eventos.get(i).haveInteresse());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
-        viewHolder.expand_button.setOnClickListener(new View.OnClickListener(){
+        viewHolder.install_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (viewHolder.linear_layout_details.getVisibility() == View.GONE) {
-                    ExpandAndCollapseViewUtil.expand(viewHolder.linear_layout_details, DURATION);
-                    viewHolder.itemDetails.setText(eventos.get(i).getDescricao());
-                    viewHolder.expand_button.setImageResource(R.mipmap.ic_more);
-                    rotate(viewHolder, 180.0f);
-
-                } else {
-                    ExpandAndCollapseViewUtil.collapse(viewHolder.linear_layout_details, DURATION);
-                    viewHolder.expand_button.setImageResource(R.mipmap.ic_less);
-                    rotate(viewHolder, -180.0f);
-
-                }
-
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setCancelable(true);
+                dialog.setPositiveButton(context.getString(R.string.install), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, context.getString(R.string.installing), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.setTitle(eventos.get(i).getNome());
+                dialog.setMessage(eventos.get(i).getDescricao());
+                dialog.create();
+                dialog.show();
             }
-
         });
-
-        viewHolder.expand_button.setImageResource(R.mipmap.ic_more);
 
 
         viewHolder.star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -127,14 +118,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             }
         });
     }
-    private void rotate(EventsHolder viewHolder, float toDegrees) {
-        Animation animation = new RotateAnimation(0.0f, toDegrees, Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setFillAfter(true);
-        animation.setDuration(DURATION);
-        viewHolder.expand_button.startAnimation(animation);
-    }
-
     @Override
     public int getItemCount() {
         return eventos.size();
