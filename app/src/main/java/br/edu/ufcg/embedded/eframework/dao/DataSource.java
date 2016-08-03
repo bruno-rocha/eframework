@@ -160,28 +160,62 @@ public class DataSource {
     }
 
     public boolean saveAllEventos(List<Evento> eventos) {
-        deleteAllEventos();
+//        deleteAllEventos();
         for (Evento evento : eventos){
-            ContentValues valores = new ContentValues();
-            valores.put(dbHelper.NOME_EVENTO, evento.getNome());
-            valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
-            valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
-            valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
-            valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
+            if (temEvento(evento)){
+                ContentValues valores = new ContentValues();
+                valores.put(dbHelper.NOME_EVENTO, evento.getNome());
+                valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
+                valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
+                valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
+                valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
 
-            if (evento.haveInteresse()) {
-                valores.put(dbHelper.INTERESSE_EVENTO, 1);
+                if(getDatabase().update(dbHelper.EVENTO, valores, dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+                        +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
+                        +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
+                        + "'", null) < 1){
+                    return false;
+                }
             } else {
-                valores.put(dbHelper.INTERESSE_EVENTO, 0);
+                ContentValues valores = new ContentValues();
+                valores.put(dbHelper.NOME_EVENTO, evento.getNome());
+                valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
+                valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
+                valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
+                valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
+
+                if (evento.haveInteresse()) {
+                    valores.put(dbHelper.INTERESSE_EVENTO, 1);
+                } else {
+                    valores.put(dbHelper.INTERESSE_EVENTO, 0);
+                }
+
+                if(getDatabase().insert(dbHelper.EVENTO, null, valores) < 1){
+                    return false;
+                }
             }
 
-            if(getDatabase().insert(dbHelper.EVENTO, null, valores) < 1){
-                return false;
-            }
         }
         return true;
     }
-    
+
+    public boolean temEvento(Evento evento) {
+        Cursor cursor = getDatabase().query(dbHelper.EVENTO,
+                dbHelper.COLUNAS_EVENTO,  dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+                        +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
+                        +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
+                        + "'", null, null, null, null);
+
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+            return true;
+        }
+
+        cursor.close();
+        return false;
+    }
+
     private Amigo createAmigo(Cursor cursor) {
         Amigo model = new Amigo(cursor.getString(cursor.getColumnIndex(dbHelper.ID_AMIGO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.NOME_AMIGO)),

@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity
 
         setUpViewsDrawer();
         setUpFragments();
+
+        getEvents();
     }
 
     private void setUpFragments(){
@@ -309,6 +311,47 @@ public class MainActivity extends AppCompatActivity
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    public List<Evento> getEvents() {
+        final List<Evento> events = new ArrayList<>();
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, getString(R.string.url_server),
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for(int i = 0; i < response.length(); i++){
+                            try {
+                                JSONObject object = (JSONObject) response.get(i);
+                                String nome = object.getString("nome");
+                                String descricao = object.getString("descricao");
+                                double latitude = object.getDouble("latitude");
+                                double longitude = object.getDouble("longitude");
+                                String url_foto = object.getString("url_photo");
+                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
+                                Log.d("TAG", evento.toString());
+                                events.add(evento);
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (events.size() > 0){
+                            DataSource dataSource = DataSource.getInstance(getApplicationContext());
+                            dataSource.saveAllEventos(events);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("eFramework", "Error: " + error.getMessage());
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(req);
+
+        return events;
+    }
+
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {

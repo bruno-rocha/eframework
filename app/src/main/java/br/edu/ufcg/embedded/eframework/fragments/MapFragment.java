@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -60,6 +61,7 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -108,13 +110,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     };
 
     private static GoogleMap map;
+    private HashMap<Marker, Evento> eventMarkerMap;
+    private ToggleButton star_button;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-
+        eventMarkerMap = new HashMap <Marker, Evento>();
         setUpMap();
         mContext = getContext();
         final List<Evento> listEvents = getEvents();
@@ -158,6 +162,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 5, locationListener);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    //
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        //
     }
 
     private void moveToMyLocation() {
@@ -216,49 +232,52 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     public List<Evento> getEvents() {
-        final List<Evento> events = new ArrayList<>();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, mContext.getString(R.string.url_server),
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject object = (JSONObject) response.get(i);
-                                String nome = object.getString("nome");
-                                String descricao = object.getString("descricao");
-                                double latitude = object.getDouble("latitude");
-                                double longitude = object.getDouble("longitude");
-                                String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
-                                Log.d("TAG", evento.toString());
-                                events.add(evento);
-                                setMarker(map, evento);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        if (events.size() > 0){
-                            DataSource dataSource = DataSource.getInstance(getContext());
-                            dataSource.saveAllEventos(events);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("eFramework", "Error: " + error.getMessage());
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-        requestQueue.add(req);
-        return events;
+//        final List<Evento> events = new ArrayList<>();
+//        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, mContext.getString(R.string.url_server),
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        for (int i = 0; i < response.length(); i++) {
+//                            try {
+//                                JSONObject object = (JSONObject) response.get(i);
+//                                String nome = object.getString("nome");
+//                                String descricao = object.getString("descricao");
+//                                double latitude = object.getDouble("latitude");
+//                                double longitude = object.getDouble("longitude");
+//                                String url_foto = object.getString("url_photo");
+//                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
+//                                Log.d("TAG", evento.toString());
+//                                events.add(evento);
+//                                setMarker(map, evento);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        if (events.size() > 0){
+//                            DataSource dataSource = DataSource.getInstance(getContext());
+//                            dataSource.saveAllEventos(events);
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                VolleyLog.d("eFramework", "Error: " + error.getMessage());
+//            }
+//        });
+//
+//        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+//        requestQueue.add(req);
+//        DataSource dataSource = DataSource.getInstance(getContext());getEvents();
+        return DataSource.getInstance(getContext()).getEvents();
     }
 
     private void setMarker(GoogleMap googleMap, Evento event) {
-            googleMap.addMarker(new MarkerOptions()
+        Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(event.getLatitude(), event.getLongitude()))
                     .title(event.getNome()).snippet(event.getDescricao()));
+        eventMarkerMap.put(marker, event);
+        Log.d("TESTE", String.valueOf(eventMarkerMap.size()));
     }
 
     private void setUpMap() {
@@ -300,6 +319,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         disable(parte6View);
         View parte7View = rootView.findViewById(R.id.tela_parte7);
         disable(parte7View);
+
+        for (Evento evento: getEvents()) {
+            setMarker(map, evento);
+        }
     }
 
     private void disable(View parte1View) {
@@ -399,6 +422,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(View view) {
 
+
             }
         });
 
@@ -415,22 +439,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         ImageView ivRota = ((ImageView) rootView.findViewById(R.id.iv_rota));
 //        TextView ivRotaName = ((TextView) rootView.findViewById(R.id.iv_rota_name));
 
-        ToggleButton star_button = (ToggleButton) rootView.findViewById(R.id.star_btn);
+        final Evento evento = eventMarkerMap.get(markerAux);
+        star_button = (ToggleButton) rootView.findViewById(R.id.star_btn);
+        star_button.setChecked(evento.haveInteresse());
+
         star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Evento evento;
+
 //                DataSource dataSource = DataSource.getInstance(getContext());
 //                Log.d("TESTE0", dataSource.getEvents().toString());
                 if (isChecked) {
-                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
-                    Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
+                    evento.setInteresse(true);
+//                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
+//                    Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 } else {
-                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
-                    Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
+//                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
+                    evento.setInteresse(false);
+//                    Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 }
                 DataSource dataSource = DataSource.getInstance(getContext());
                 dataSource.saveFavorito(evento);
+
+                map.clear();
+                for (Evento evento: getEvents()) {
+                    setMarker(map, evento);
+                }
+
 //
 ////                Log.d("TESTE", dataSource.getEvents().toString());
 //                Log.d("TESTE1", dataSource.getEvents().toString());
@@ -458,6 +493,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             new TracaRota().execute(markerAux);
         }
     }
+
 
     private class TracaRota extends AsyncTask<Marker, Void, Location> {
 

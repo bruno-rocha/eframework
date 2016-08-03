@@ -61,11 +61,23 @@ public class CardFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
+//        eventos = getEvents();
+
         eventos = getEvents();
+        adapter = new EventsAdapter(eventos, mContext);
+        recyclerView.setAdapter(adapter);
 
         setHasOptionsMenu(true);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        eventos = getEvents();
+        adapter = new EventsAdapter(eventos, mContext);
+        recyclerView.setAdapter(adapter);
     }
 
     private void doTheSearch(String query) {
@@ -148,46 +160,46 @@ public class CardFragment extends Fragment {
 
 
     public List<Evento> getEvents() {
-        final List<Evento> events = new ArrayList<>();
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, mContext.getString(R.string.url_server),
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for(int i = 0; i < response.length(); i++){
-                            try {
-                                JSONObject object = (JSONObject) response.get(i);
-                                String nome = object.getString("nome");
-                                String descricao = object.getString("descricao");
-                                double latitude = object.getDouble("latitude");
-                                double longitude = object.getDouble("longitude");
-                                String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
-                                Log.d("TAG", evento.toString());
-                                events.add(evento);
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
+//        final List<Evento> events = new ArrayList<>();
+//        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, mContext.getString(R.string.url_server),
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        for(int i = 0; i < response.length(); i++){
+//                            try {
+//                                JSONObject object = (JSONObject) response.get(i);
+//                                String nome = object.getString("nome");
+//                                String descricao = object.getString("descricao");
+//                                double latitude = object.getDouble("latitude");
+//                                double longitude = object.getDouble("longitude");
+//                                String url_foto = object.getString("url_photo");
+//                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
+//                                Log.d("TAG", evento.toString());
+//                                events.add(evento);
+//                            } catch (Exception e){
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        adapter = new EventsAdapter(eventos, mContext);
+//                        recyclerView.setAdapter(adapter);
+//
+//                        if (events.size() > 0){
+//                            DataSource dataSource = DataSource.getInstance(getContext());
+//                            dataSource.saveAllEventos(eventos);
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                VolleyLog.d("eFramework", "Error: " + error.getMessage());
+//            }
+//        });
+//
+//        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+//        requestQueue.add(req);
 
-                        adapter = new EventsAdapter(eventos, mContext);
-                        recyclerView.setAdapter(adapter);
-
-                        if (events.size() > 0){
-                            DataSource dataSource = DataSource.getInstance(getContext());
-                            dataSource.saveAllEventos(eventos);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("eFramework", "Error: " + error.getMessage());
-            }
-        });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-        requestQueue.add(req);
-
-        return events;
+        return DataSource.getInstance(getContext()).getEvents();
     }
 
     public void setAdapter(RecyclerView.Adapter adapter) {

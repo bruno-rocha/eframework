@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHolder> {
@@ -63,6 +64,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             linear_layout_details = (ViewGroup) itemView.findViewById(R.id.layout_expand);
             star_button = (ToggleButton) itemView.findViewById(R.id.star_btn);
 
+
+
         }
 
     }
@@ -83,6 +86,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
     @Override
     public void onBindViewHolder(final EventsHolder viewHolder, final int i) {
         viewHolder.itemTitle.setText(eventos.get(i).getNome());
+        viewHolder.star_button.setChecked(eventos.get(i).haveInteresse());
         Picasso.with(context).load(eventos.get(i).getUrlFoto()).into(viewHolder.img);
 //        viewHolder.img.setBackgroundResource(eventos.);
         viewHolder.expand_button.setOnClickListener(new View.OnClickListener(){
@@ -118,6 +122,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                     eventos.get(i).setInteresse(false);
                     Toast.makeText(context, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 }
+                DataSource dataSource = DataSource.getInstance(context);
+                dataSource.saveFavorito(eventos.get(i));
             }
         });
     }
