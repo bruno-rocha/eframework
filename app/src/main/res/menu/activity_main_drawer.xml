@@ -12,6 +12,16 @@
             android:id="@+id/my_events"
             android:icon="@android:drawable/ic_dialog_map"
             android:title="@string/my_events" />
+
+        <item
+            android:id="@+id/create_event"
+            android:icon="@drawable/ic_add_circle_black_24dp"
+            android:title="@string/create_event"
+            />
+        <item
+            android:id="@+id/about"
+            android:title="@string/about"
+            android:icon="@drawable/ic_info_black_48dp"/>
     </group>
 
     <group android:checkableBehavior="none"

@@ -51,7 +51,9 @@ import java.util.Map;
 
 import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.dao.DataSource;
+import br.edu.ufcg.embedded.eframework.fragments.AboutFragment;
 import br.edu.ufcg.embedded.eframework.fragments.CardFragment;
+import br.edu.ufcg.embedded.eframework.fragments.CreateEventFragment;
 import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
 import br.edu.ufcg.embedded.eframework.fragments.MyEventsFragment;
 import br.edu.ufcg.embedded.eframework.models.Evento;
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     public static final String MAP_TAG = "MAP_TAG";
     public static final String CARD_TAG = "CARD_TAG";
     public static final String MY_EVENTS_TAG = "MY_EVENTS_TAG";
+    public static final String ABOUT_TAG = "ABOUT_TAG";
+    public static final String CREATE_EVENT_TAG = "CREATE_EVENT_TAG";
 
 
     private SharedPreferences sharedPreferences;
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity
     private int lastFragment;
     private Fragment currentFragment;
     private ArrayList<Evento> events;
+    private AboutFragment aboutFragment;
+    private CreateEventFragment create_event_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,8 @@ public class MainActivity extends AppCompatActivity
         mapFragment = new MapFragment();
         myEventsFragment = new MyEventsFragment();
         cardFragment = new CardFragment();
+        aboutFragment = new AboutFragment();
+        create_event_fragment = new CreateEventFragment();
 //        cardFragment = new CardFragment();
 
         currentFragment = mapFragment;
@@ -262,6 +270,32 @@ public class MainActivity extends AppCompatActivity
                 }
                 currentFragment = myEventsFragment;
                 lastFragment = R.id.my_events;
+                break;
+
+            case R.id.create_event:
+                getSupportActionBar().setTitle(getString(R.string.create_event));
+                if (fragmentManager.findFragmentByTag(CREATE_EVENT_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, create_event_fragment, CREATE_EVENT_TAG);
+                    fragmentTransaction.show(create_event_fragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(CREATE_EVENT_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(create_event_fragment).commit();
+                }
+                currentFragment = create_event_fragment;
+                lastFragment = R.id.create_event;
+                break;
+
+            case R.id.about:
+                getSupportActionBar().setTitle(getString(R.string.about));
+                if (fragmentManager.findFragmentByTag(ABOUT_TAG) == null) {
+                    fragmentTransaction.hide(currentFragment);
+                    fragmentTransaction.add(R.id.fragment_container, aboutFragment, ABOUT_TAG);
+                    fragmentTransaction.show(aboutFragment).commit();
+                } else if (!fragmentManager.findFragmentByTag(ABOUT_TAG).isVisible()) {
+                    fragmentTransaction.hide(currentFragment).show(aboutFragment).commit();
+                }
+                currentFragment = aboutFragment;
+                lastFragment = R.id.about;
                 break;
 
 

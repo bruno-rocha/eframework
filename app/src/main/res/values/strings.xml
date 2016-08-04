@@ -25,4 +25,11 @@
     <string name="capturando_posicao">Estamos capturando sua posição</string>
 
     <string name="search">Search</string>
+    <string name="about">Sobre</string>
+    <string name="version">Versão 1.0</string>
+    <string name="copyright">2016 Copyright©</string>
+    <string name="about_embedded">Laboratório de Sistemas Embarcados \ne Computação Pervasiva - UFCG - Brasil</string>
+    <string name="about_desenvolvido">Desenvolvido por:</string>
+    <string name="create_event">Criar evento</string>
+    <string name="text_create_event">Você desejar criar um app para o seu evento? \nAcesse <b>www.eventshere.com</b> e configure o seu aplicativo para seu evento.</string>
 </resources>

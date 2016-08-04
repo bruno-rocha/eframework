@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".fragments.CreateEventFragment">
+    <include layout="@layout/content_main" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/create_event_image"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="0dp"
+        android:layout_margin="30dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/text_create_event"
+        android:id="@+id/create_event_text"
+        android:textAlignment="center"
+        android:layout_below="@+id/create_event_image"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="30dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IR"
+        android:id="@+id/create_event_button"
+        android:layout_below="@+id/create_event_text"
+        android:layout_alignRight="@+id/create_event_text"
+        android:layout_alignEnd="@+id/create_event_text"
+        android:layout_alignLeft="@+id/create_event_text"
+        android:layout_alignStart="@+id/create_event_text"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+
+</RelativeLayout>
