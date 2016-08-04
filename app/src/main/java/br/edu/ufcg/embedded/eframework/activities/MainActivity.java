@@ -176,6 +176,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getBooleanExtra("NOTIFICATION", true)) {
+            fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+            if (fragmentManager.findFragmentByTag(MY_EVENTS_TAG) == null) {
+                fragmentTransaction.hide(currentFragment);
+                fragmentTransaction.add(R.id.fragment_container, myEventsFragment, MY_EVENTS_TAG);
+                fragmentTransaction.show(myEventsFragment).commit();
+            } else if (!fragmentManager.findFragmentByTag(MY_EVENTS_TAG).isVisible()) {
+                fragmentTransaction.hide(currentFragment).show(myEventsFragment).commit();
+            }
+            currentFragment = myEventsFragment;
+            lastFragment = R.id.my_events;
+            getIntent().putExtra("NOTIFICATION", false);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -360,7 +380,8 @@ public class MainActivity extends AppCompatActivity
                                 double latitude = object.getDouble("latitude");
                                 double longitude = object.getDouble("longitude");
                                 String url_foto = object.getString("url_photo");
-                                Evento evento = new Evento(nome, descricao, latitude, longitude, url_foto, false);
+                                String data = object.getString("data");
+                                Evento evento = new Evento(nome, descricao, data, latitude, longitude, url_foto, false);
                                 Log.d("TAG", evento.toString());
                                 events.add(evento);
                             } catch (Exception e){

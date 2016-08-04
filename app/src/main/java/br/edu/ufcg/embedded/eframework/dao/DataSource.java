@@ -120,6 +120,7 @@ public class DataSource {
                 }
 
                 if(getDatabase().update(dbHelper.EVENTO, valores, dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+
                         +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
                         +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
                         + "'", null) < 1){
@@ -166,11 +167,13 @@ public class DataSource {
                 ContentValues valores = new ContentValues();
                 valores.put(dbHelper.NOME_EVENTO, evento.getNome());
                 valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
+                valores.put(dbHelper.DATA_EVENTO, evento.getData());
                 valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
                 valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
                 valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
 
                 if(getDatabase().update(dbHelper.EVENTO, valores, dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+                        +"' AND " + dbHelper.DATA_EVENTO + " = '" + evento.getData()
                         +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
                         +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
                         + "'", null) < 1){
@@ -180,6 +183,7 @@ public class DataSource {
                 ContentValues valores = new ContentValues();
                 valores.put(dbHelper.NOME_EVENTO, evento.getNome());
                 valores.put(dbHelper.DESCRICAO_EVENTO, evento.getDescricao());
+                valores.put(dbHelper.DATA_EVENTO, evento.getData());
                 valores.put(dbHelper.LATITUDE_EVENTO, evento.getLatitude());
                 valores.put(dbHelper.LONGITUDE_EVENTO, evento.getLongitude());
                 valores.put(dbHelper.URL_IMAGEM_EVENTO, evento.getUrlFoto());
@@ -202,6 +206,7 @@ public class DataSource {
     public boolean temEvento(Evento evento) {
         Cursor cursor = getDatabase().query(dbHelper.EVENTO,
                 dbHelper.COLUNAS_EVENTO,  dbHelper.NOME_EVENTO + " = '"+ evento.getNome()
+                        +"' AND " + dbHelper.DATA_EVENTO + " = '" + evento.getData()
                         +"' AND " + dbHelper.LATITUDE_EVENTO + " = '" + evento.getLatitude()
                         +"' AND " + dbHelper.LONGITUDE_EVENTO + " = '" + evento.getLongitude()
                         + "'", null, null, null, null);
@@ -233,6 +238,7 @@ public class DataSource {
         Evento model = new Evento(
                 cursor.getString(cursor.getColumnIndex(dbHelper.NOME_EVENTO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.DESCRICAO_EVENTO)),
+                cursor.getString(cursor.getColumnIndex(dbHelper.DATA_EVENTO)),
                 cursor.getDouble(cursor.getColumnIndex(dbHelper.LATITUDE_EVENTO)),
                 cursor.getDouble(cursor.getColumnIndex(dbHelper.LONGITUDE_EVENTO)),
                 cursor.getString(cursor.getColumnIndex(dbHelper.URL_IMAGEM_EVENTO)),

@@ -1,6 +1,13 @@
 package br.edu.ufcg.embedded.eframework.utils;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +28,14 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.edu.ufcg.embedded.eframework.R;
+import br.edu.ufcg.embedded.eframework.activities.MainActivity;
 import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.models.Evento;
 
@@ -108,7 +120,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     eventos.get(i).setInteresse(true);
+
+                    Date date = null;
+                    try {
+                      date = new SimpleDateFormat("dd/MM/yyyy").parse(eventos.get(i).getData());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    intent.setAction("ALARME_RECEIVER");
+                    PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    calendar.set(Calendar.HOUR_OF_DAY, 12);
+
+
+                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     Toast.makeText(context, "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
+
                 } else {
                     eventos.get(i).setInteresse(false);
                     Toast.makeText(context, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();

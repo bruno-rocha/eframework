@@ -14,7 +14,7 @@
     <string name="home">Início</string>
     <string name="logout">Logout</string>
     <string name="continuar_sem_login">Continuar sem login</string>
-    <string name="url_server">http://www.mocky.io/v2/578fc2822600000d067ee421</string>
+    <string name="url_server">http://www.mocky.io/v2/57a3738e3b000053169034bc</string>
     <string name="cards">Lista de cards</string>
     <string name="install">Instalar</string>
     <string name="open">Abrir</string>
@@ -32,4 +32,6 @@
     <string name="about_desenvolvido">Desenvolvido por:</string>
     <string name="create_event">Criar evento</string>
     <string name="text_create_event">Você desejar criar um app para o seu evento? \nAcesse <b>www.eventshere.com</b> e configure o seu aplicativo para seu evento.</string>
+    <string name="eventshere">eventshere</string>
+    <string name="lembrete_para">Você tem um lembrete para um evento</string>
 </resources>

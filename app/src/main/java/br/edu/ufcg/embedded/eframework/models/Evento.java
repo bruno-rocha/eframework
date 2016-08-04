@@ -6,11 +6,13 @@ public class Evento {
     double latitude;
     double longitude;
     String urlFoto;
+    String data;
     boolean interesse;
 
-    public Evento(String nome, String descricao, double latitude, double longitude, String urlFoto, boolean interesse) {
+    public Evento(String nome, String descricao, String data, double latitude, double longitude, String urlFoto, boolean interesse) {
         this.nome = nome;
         this.descricao = descricao;
+        this.data = data;
         this.latitude = latitude;
         this.longitude = longitude;
         this.urlFoto = urlFoto;
@@ -63,6 +65,14 @@ public class Evento {
 
     public void setInteresse(boolean interesse) {
         this.interesse = interesse;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override
