@@ -23,6 +23,7 @@ public class MyEventsFragment extends android.support.v4.app.Fragment {
     private MyEventsAdapter adapter;
     private List<Evento> eventos;
     private DataSource dataSource;
+    public static boolean hasUpdates;
 
     @Nullable
     @Override
@@ -49,5 +50,15 @@ public class MyEventsFragment extends android.support.v4.app.Fragment {
         eventos = dataSource.getEventsInteresse();
         adapter = new MyEventsAdapter(mContext, eventos);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hasUpdates){
+            adapter.swap(dataSource.getEventsInteresse());
+            hasUpdates = false;
+        }
+
     }
 }

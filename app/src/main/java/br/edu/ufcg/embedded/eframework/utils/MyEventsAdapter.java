@@ -50,6 +50,12 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.MyView
         return eventos.size();
     }
 
+    public void swap(List<Evento> eventos){
+        this.eventos.clear();
+        this.eventos.addAll(eventos);
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder{
         TextView title;
         ImageView icon;

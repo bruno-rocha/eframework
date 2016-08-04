@@ -15,6 +15,7 @@ import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -113,6 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static GoogleMap map;
     private HashMap<Marker, Evento> eventMarkerMap;
     private ToggleButton star_button;
+    public static boolean hasUpdates;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -468,8 +470,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onClick(View v) {
                 if (star_button.isChecked()) {
                     evento.setInteresse(true);
+                    Toast.makeText(mContext, "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 } else {
                     evento.setInteresse(false);
+                    Toast.makeText(mContext, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
+
                 }
                 DataSource dataSource = DataSource.getInstance(getContext());
                 dataSource.saveFavorito(evento);
@@ -531,6 +536,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         } else {
             new TracaRota().execute(markerAux);
         }
+    }
+
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hasUpdates){
+            updateMap(DataSource.getInstance(mContext).getEvents());
+            hasUpdates = false;
+        }
+
     }
 
     private class TracaRota extends AsyncTask<Marker, Void, Location> {
