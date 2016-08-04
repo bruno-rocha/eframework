@@ -47,8 +47,9 @@ public class CardFragment extends Fragment {
 
     private Context mContext;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private EventsAdapter adapter;
     private List<Evento> eventos = new ArrayList<>();
+    public static boolean hasUpdates;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -200,6 +201,16 @@ public class CardFragment extends Fragment {
 //        requestQueue.add(req);
 
         return DataSource.getInstance(getContext()).getEvents();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hasUpdates){
+            adapter.swap(DataSource.getInstance(mContext).getEvents());
+            hasUpdates = false;
+        }
+
     }
 
     public void setAdapter(RecyclerView.Adapter adapter) {

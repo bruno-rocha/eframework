@@ -1,5 +1,10 @@
 package br.edu.ufcg.embedded.eframework.models;
 
+import br.edu.ufcg.embedded.eframework.fragments.CardFragment;
+import br.edu.ufcg.embedded.eframework.fragments.MapFragment;
+import br.edu.ufcg.embedded.eframework.fragments.MyEventsFragment;
+import br.edu.ufcg.embedded.eframework.utils.MyEventsAdapter;
+
 public class Evento {
     String nome;
     String descricao;
@@ -65,6 +70,9 @@ public class Evento {
 
     public void setInteresse(boolean interesse) {
         this.interesse = interesse;
+        MyEventsFragment.hasUpdates = true;
+        CardFragment.hasUpdates = true;
+        MapFragment.hasUpdates = true;
     }
 
     public String getData() {

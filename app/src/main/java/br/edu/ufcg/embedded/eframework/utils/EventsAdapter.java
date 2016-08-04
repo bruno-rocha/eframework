@@ -114,11 +114,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
             }
         });
 
-
-        viewHolder.star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        viewHolder.star_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            public void onClick(View v) {
+                if (viewHolder.star_button.isChecked()) {
                     eventos.get(i).setInteresse(true);
 
                     Date date = null;
@@ -151,7 +150,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
                 dataSource.saveFavorito(eventos.get(i));
             }
         });
+
+//        viewHolder.star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    eventos.get(i).setInteresse(true);
+//                    Toast.makeText(context, "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    eventos.get(i).setInteresse(false);
+//                    Toast.makeText(context, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
+//                }
+//                DataSource dataSource = DataSource.getInstance(context);
+//                dataSource.saveFavorito(eventos.get(i));
+//            }
+//        });
     }
+
+    public void swap(List<Evento> eventos){
+        this.eventos.clear();
+        this.eventos.addAll(eventos);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return eventos.size();
