@@ -463,20 +463,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         star_button = (ToggleButton) rootView.findViewById(R.id.star_btn);
         star_button.setChecked(evento.haveInteresse());
 
-        star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        star_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-//                DataSource dataSource = DataSource.getInstance(getContext());
-//                Log.d("TESTE0", dataSource.getEvents().toString());
-                if (isChecked) {
+            public void onClick(View v) {
+                if (star_button.isChecked()) {
                     evento.setInteresse(true);
-//                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
-//                    Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 } else {
-//                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
                     evento.setInteresse(false);
-//                    Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 }
                 DataSource dataSource = DataSource.getInstance(getContext());
                 dataSource.saveFavorito(evento);
@@ -485,13 +478,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 for (Evento evento: getEvents()) {
                     setMarker(map, evento);
                 }
-
-//
-////                Log.d("TESTE", dataSource.getEvents().toString());
-//                Log.d("TESTE1", dataSource.getEvents().toString());
-//                Log.d("TESTE2", dataSource.getEventsInteresse().toString());
             }
         });
+
+//        star_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+////                DataSource dataSource = DataSource.getInstance(getContext());
+////                Log.d("TESTE0", dataSource.getEvents().toString());
+//                if (isChecked) {
+//                    evento.setInteresse(true);
+////                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
+////                    Toast.makeText(getContext(), "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
+//                } else {
+////                    evento = new Evento(markerAux.getTitle(), markerAux.getSnippet(), markerAux.getPosition().latitude, markerAux.getPosition().longitude, null, true);
+//                    evento.setInteresse(false);
+////                    Toast.makeText(getContext(), "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
+//                }
+//                DataSource dataSource = DataSource.getInstance(getContext());
+//                dataSource.saveFavorito(evento);
+//
+//                map.clear();
+//                for (Evento evento: getEvents()) {
+//                    setMarker(map, evento);
+//                }
+//
+////
+//////                Log.d("TESTE", dataSource.getEvents().toString());
+////                Log.d("TESTE1", dataSource.getEvents().toString());
+////                Log.d("TESTE2", dataSource.getEventsInteresse().toString());
+//            }
+//        });
+
+
 
         View.OnClickListener onTracarClick = new View.OnClickListener() {
             @Override
