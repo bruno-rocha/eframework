@@ -117,33 +117,34 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsHold
         viewHolder.star_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Date date = null;
+                try {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(eventos.get(i).getData());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+                AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.setAction("ALARME_RECEIVER");
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.set(Calendar.HOUR_OF_DAY, 12);
                 if (viewHolder.star_button.isChecked()) {
                     eventos.get(i).setInteresse(true);
-
-                    Date date = null;
-                    try {
-                      date = new SimpleDateFormat("dd/MM/yyyy").parse(eventos.get(i).getData());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-                    Intent intent = new Intent(context, AlarmReceiver.class);
-                    intent.setAction("ALARME_RECEIVER");
-                    PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    calendar.set(Calendar.HOUR_OF_DAY, 12);
-
 
                     alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     Toast.makeText(context, "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
 
                 } else {
                     eventos.get(i).setInteresse(false);
+
+                    alarmMgr.cancel(alarmIntent);
+
                     Toast.makeText(context, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 }
                 DataSource dataSource = DataSource.getInstance(context);

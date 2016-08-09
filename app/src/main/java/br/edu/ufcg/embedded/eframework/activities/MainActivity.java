@@ -1,9 +1,12 @@
 package br.edu.ufcg.embedded.eframework.activities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -46,6 +49,7 @@ import org.json.JSONObject;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -178,21 +182,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (getIntent().getBooleanExtra("NOTIFICATION", true)) {
-            fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            getSupportActionBar().setTitle(getString(R.string.app_name));
-            if (fragmentManager.findFragmentByTag(MY_EVENTS_TAG) == null) {
-                fragmentTransaction.hide(currentFragment);
-                fragmentTransaction.add(R.id.fragment_container, myEventsFragment, MY_EVENTS_TAG);
-                fragmentTransaction.show(myEventsFragment).commit();
-            } else if (!fragmentManager.findFragmentByTag(MY_EVENTS_TAG).isVisible()) {
-                fragmentTransaction.hide(currentFragment).show(myEventsFragment).commit();
-            }
-            currentFragment = myEventsFragment;
-            lastFragment = R.id.my_events;
-            getIntent().putExtra("NOTIFICATION", false);
-        }
     }
 
     @Override

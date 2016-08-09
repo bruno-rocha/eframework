@@ -2,6 +2,8 @@ package br.edu.ufcg.embedded.eframework.fragments;
 
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -62,7 +64,11 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +77,7 @@ import br.edu.ufcg.embedded.eframework.R;
 import br.edu.ufcg.embedded.eframework.activities.MainActivity;
 import br.edu.ufcg.embedded.eframework.dao.DataSource;
 import br.edu.ufcg.embedded.eframework.models.Evento;
+import br.edu.ufcg.embedded.eframework.utils.AlarmReceiver;
 
 
 /**
@@ -468,11 +475,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         star_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlarmManager alarmMgr = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+                Date date = null;
+                try {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(evento.getData());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Intent intent = new Intent(getContext(), AlarmReceiver.class);
+                intent.setAction("ALARME_RECEIVER");
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.set(Calendar.HOUR_OF_DAY, 12);
+
                 if (star_button.isChecked()) {
                     evento.setInteresse(true);
+
+                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
                     Toast.makeText(mContext, "Você tem interesse neste evento", Toast.LENGTH_SHORT).show();
                 } else {
                     evento.setInteresse(false);
+
+                    alarmMgr.cancel(alarmIntent);
+
                     Toast.makeText(mContext, "Você não tem interesse neste evento", Toast.LENGTH_SHORT).show();
 
                 }
